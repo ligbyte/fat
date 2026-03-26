@@ -24,7 +24,6 @@
 *.iws
 .idea/
 
-Flutter自适应框架对比.png
 
 # Visual Studio Code related
 .vscode/
