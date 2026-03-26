@@ -1,4 +1,4 @@
-package com.windcloud.flutter_rust;
+package com.windcloud.fat;
 
 import io.flutter.embedding.android.FlutterActivity;
 

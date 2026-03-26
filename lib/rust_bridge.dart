@@ -15,11 +15,11 @@ class RustBridge {
     String libraryPath = '';
 
     if (Platform.isWindows) {
-      libraryPath = 'flutter_rust.dll'; // DLL在运行目录中
+      libraryPath = 'fat.dll'; // DLL在运行目录中
     } else if (Platform.isLinux) {
-      libraryPath = 'libflutter_rust.so';
+      libraryPath = 'libfat.so';
     } else if (Platform.isMacOS) {
-      libraryPath = 'libflutter_rust.dylib';
+      libraryPath = 'libfat.dylib';
     }
 
     _dylib = DynamicLibrary.open(libraryPath);

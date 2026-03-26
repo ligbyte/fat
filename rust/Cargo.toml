@@ -1,5 +1,5 @@
 [package]
-name = "flutter_rust"
+name = "fat"
 version = "0.1.0"
 edition = "2021"
 
