@@ -1,6 +1,6 @@
-# fat
+# Fat
 
-A new Flutter project.
+File + Cat = Fat
 
 ## Getting Started
 
@@ -72,6 +72,11 @@ flutter build macos
 flutter build linux
 
 ```
+
+
+C:\Users\dev>rustc --version
+rustc 1.91.0 (f8297e351 2025-10-28)
+
 
 
 
