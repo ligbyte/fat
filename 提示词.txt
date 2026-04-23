@@ -1,0 +1,8 @@
+请仔细阅读当前项目，当前项目是一个Flutter和Rust混合项目，Flutter负责UI展示，Rust负责逻辑的实现，目前项目是可以运行的，你可以在终端中使用命令：flutter run -d windows   来运行当前项目   
+
+
+请帮我删除 计数相关的UI和逻辑
+
+
+ResponsiveFramework是一个Flutter的UI自适应框架，使用ResponsiveFramework框架可以很好的适配UI在手机、平台、电脑端的显示，请使用ResponsiveFramework框架对目前项目进行改造
+ResponsiveFramework框架源码地址：https://github.com/Codelessly/ResponsiveFramework

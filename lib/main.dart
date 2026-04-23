@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'rust_bridge.dart';
-import 'dart:convert';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +16,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Rust Demo',
+      builder: (context, child) => ResponsiveBreakpoints.builder(
+        child: child!,
+        breakpoints: [
+          const Breakpoint(start: 0, end: 450, name: MOBILE),
+          const Breakpoint(start: 451, end: 800, name: TABLET),
+          const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+          const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
+        ],
+      ),
       theme: ThemeData(
         // 使用更柔和的颜色主题，类似iOS/MacOS风格
         colorScheme: ColorScheme.fromSeed(
@@ -62,17 +71,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   String _result = '';
   String _filePath = 'test_file.txt';
   String _fileContent = 'Hello from Flutter!';
   final ScrollController _scrollController = ScrollController();
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   void _createFile() async {
     final result = RustBridge.createFile(_filePath);
@@ -119,7 +121,11 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(
           widget.title,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: ResponsiveValue<double>(context, conditionalValues: [
+              const Condition.equals(name: MOBILE, value: 16),
+              const Condition.equals(name: TABLET, value: 18),
+              const Condition.equals(name: DESKTOP, value: 20),
+            ]).value,
             fontWeight: FontWeight.w600,
             color: Theme.of(context).colorScheme.primary,
           ),
@@ -139,41 +145,35 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Counter card
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Button Press Counter',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        '$_counter',
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Use the actual screen width instead of forcing a fixed scaled width
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: ResponsiveValue<double>(context, conditionalValues: [
+                  const Condition.equals(name: MOBILE, value: 12.0),
+                  const Condition.equals(name: TABLET, value: 16.0),
+                  const Condition.equals(name: DESKTOP, value: 24.0),
+                ]).value,
+                vertical: ResponsiveValue<double>(context, conditionalValues: [
+                  const Condition.equals(name: MOBILE, value: 8.0),
+                  const Condition.equals(name: TABLET, value: 16.0),
+                  const Condition.equals(name: DESKTOP, value: 20.0),
+                ]).value,
               ),
-              
-              const SizedBox(height: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               
               // Input fields
               Text(
                 'File Operations',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                    const Condition.equals(name: MOBILE, value: 16),
+                    const Condition.equals(name: TABLET, value: 18),
+                    const Condition.equals(name: DESKTOP, value: 20),
+                  ]).value,
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -182,7 +182,11 @@ class _MyHomePageState extends State<MyHomePage> {
               
               Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: ResponsiveValue<EdgeInsets>(context, conditionalValues: [
+                    const Condition.equals(name: MOBILE, value: EdgeInsets.all(12.0)),
+                    const Condition.equals(name: TABLET, value: EdgeInsets.all(16.0)),
+                    const Condition.equals(name: DESKTOP, value: EdgeInsets.all(16.0)),
+                  ]).value,
                   child: Column(
                     children: [
                       TextField(
@@ -197,7 +201,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                         controller: TextEditingController()..text = _filePath,
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: ResponsiveValue<double>(context, conditionalValues: [
+                          const Condition.equals(name: MOBILE, value: 10),
+                          const Condition.equals(name: TABLET, value: 12),
+                          const Condition.equals(name: DESKTOP, value: 12),
+                        ]).value,
+                      ),
                       TextField(
                         decoration: const InputDecoration(
                           labelText: 'File Content',
@@ -222,7 +232,11 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                 'Operations',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                    const Condition.equals(name: MOBILE, value: 16),
+                    const Condition.equals(name: TABLET, value: 18),
+                    const Condition.equals(name: DESKTOP, value: 20),
+                  ]).value,
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -230,33 +244,111 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(height: 12),
               
               Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: ResponsiveValue<double>(context, conditionalValues: [
+                  const Condition.equals(name: MOBILE, value: 6),
+                  const Condition.equals(name: TABLET, value: 8),
+                  const Condition.equals(name: DESKTOP, value: 8),
+                ]).value,
+                runSpacing: ResponsiveValue<double>(context, conditionalValues: [
+                  const Condition.equals(name: MOBILE, value: 6),
+                  const Condition.equals(name: TABLET, value: 8),
+                  const Condition.equals(name: DESKTOP, value: 8),
+                ]).value,
                 children: [
                   OutlinedButton.icon(
                     onPressed: _createFile,
-                    icon: const Icon(Icons.add, size: 18),
-                    label: const Text('Create File'),
+                    icon: Icon(Icons.add, 
+                      size: ResponsiveValue<double>(context, conditionalValues: [
+                        const Condition.equals(name: MOBILE, value: 16),
+                        const Condition.equals(name: TABLET, value: 18),
+                        const Condition.equals(name: DESKTOP, value: 18),
+                      ]).value,
+                    ),
+                    label: Text('Create File',
+                      style: TextStyle(
+                        fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                          const Condition.equals(name: MOBILE, value: 12),
+                          const Condition.equals(name: TABLET, value: 14),
+                          const Condition.equals(name: DESKTOP, value: 14),
+                        ]).value,
+                      ),
+                    ),
                   ),
                   OutlinedButton.icon(
                     onPressed: _writeFile,
-                    icon: const Icon(Icons.edit, size: 18),
-                    label: const Text('Write File'),
+                    icon: Icon(Icons.edit,
+                      size: ResponsiveValue<double>(context, conditionalValues: [
+                        const Condition.equals(name: MOBILE, value: 16),
+                        const Condition.equals(name: TABLET, value: 18),
+                        const Condition.equals(name: DESKTOP, value: 18),
+                      ]).value,
+                    ),
+                    label: Text('Write File',
+                      style: TextStyle(
+                        fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                          const Condition.equals(name: MOBILE, value: 12),
+                          const Condition.equals(name: TABLET, value: 14),
+                          const Condition.equals(name: DESKTOP, value: 14),
+                        ]).value,
+                      ),
+                    ),
                   ),
                   OutlinedButton.icon(
                     onPressed: _readFile,
-                    icon: const Icon(Icons.visibility, size: 18),
-                    label: const Text('Read File'),
+                    icon: Icon(Icons.visibility,
+                      size: ResponsiveValue<double>(context, conditionalValues: [
+                        const Condition.equals(name: MOBILE, value: 16),
+                        const Condition.equals(name: TABLET, value: 18),
+                        const Condition.equals(name: DESKTOP, value: 18),
+                      ]).value,
+                    ),
+                    label: Text('Read File',
+                      style: TextStyle(
+                        fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                          const Condition.equals(name: MOBILE, value: 12),
+                          const Condition.equals(name: TABLET, value: 14),
+                          const Condition.equals(name: DESKTOP, value: 14),
+                        ]).value,
+                      ),
+                    ),
                   ),
                   OutlinedButton.icon(
                     onPressed: _getFileInfo,
-                    icon: const Icon(Icons.info, size: 18),
-                    label: const Text('Get Info'),
+                    icon: Icon(Icons.info,
+                      size: ResponsiveValue<double>(context, conditionalValues: [
+                        const Condition.equals(name: MOBILE, value: 16),
+                        const Condition.equals(name: TABLET, value: 18),
+                        const Condition.equals(name: DESKTOP, value: 18),
+                      ]).value,
+                    ),
+                    label: Text('Get Info',
+                      style: TextStyle(
+                        fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                          const Condition.equals(name: MOBILE, value: 12),
+                          const Condition.equals(name: TABLET, value: 14),
+                          const Condition.equals(name: DESKTOP, value: 14),
+                        ]).value,
+                      ),
+                    ),
                   ),
                   OutlinedButton.icon(
                     onPressed: _deleteFile,
-                    icon: const Icon(Icons.delete, size: 18),
-                    label: const Text('Delete File'),
+                    icon: Icon(Icons.delete,
+                      size: ResponsiveValue<double>(context, conditionalValues: [
+                        const Condition.equals(name: MOBILE, value: 16),
+                        const Condition.equals(name: TABLET, value: 18),
+                        const Condition.equals(name: DESKTOP, value: 18),
+                      ]).value,
+                    ),
+                    label: Text('Delete File',
+                      style: TextStyle(
+                        fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                          const Condition.equals(name: MOBILE, value: 12),
+                          const Condition.equals(name: TABLET, value: 14),
+                          const Condition.equals(name: DESKTOP, value: 14),
+                        ]).value,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -277,7 +369,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             Text(
                               'Result',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                                  const Condition.equals(name: MOBILE, value: 14),
+                                  const Condition.equals(name: TABLET, value: 16),
+                                  const Condition.equals(name: DESKTOP, value: 18),
+                                ]).value,
                                 fontWeight: FontWeight.w600,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
@@ -285,7 +381,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             Text(
                               'Rust Powered',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                                  const Condition.equals(name: MOBILE, value: 10),
+                                  const Condition.equals(name: TABLET, value: 12),
+                                  const Condition.equals(name: DESKTOP, value: 14),
+                                ]).value,
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
                             ),
@@ -326,14 +426,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           ),
+        );
+          },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment Counter',
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.add),
       ),
     );
   }
