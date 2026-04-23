@@ -290,7 +290,7 @@ class _MyHomePageState extends State<MyHomePage> {
               return Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: horizontalPadding,
-                  vertical: 24,
+                  vertical: 16,
                 ),
                 child: Center(
                   child: ConstrainedBox(
@@ -299,7 +299,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildFolderCard(),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 12),
                         Expanded(
                           child: _buildDirectoryContents(),
                         ),
@@ -317,7 +317,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildFolderCard() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
@@ -340,12 +340,12 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [Color(0xFF5B8DEF), Color(0xFF8B5CF6)],
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
                   color: const Color(0xFF5B8DEF).withOpacity(0.3),
@@ -357,10 +357,10 @@ class _MyHomePageState extends State<MyHomePage> {
             child: const Icon(
               Icons.folder_open_rounded,
               color: Colors.white,
-              size: 28,
+              size: 24,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,17 +368,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 const Text(
                   '共享文件夹路径',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF64748B),
                     letterSpacing: 0.3,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
                   _filecatPath.isEmpty ? '加载中...' : _filecatPath,
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 14,
                     color: Color(0xFF1E293B),
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.2,
@@ -390,45 +390,26 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           const SizedBox(width: 16),
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF5B8DEF), Color(0xFF8B5CF6)],
+          OutlinedButton(
+            onPressed: _changeFilecatPath,
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              side: const BorderSide(
+                color: Color(0xFF5B8DEF),
+                width: 2,
               ),
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF5B8DEF).withOpacity(0.25),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              backgroundColor: const Color(0xFF5B8DEF).withOpacity(0.05),
             ),
-            child: ElevatedButton(
-              onPressed: _changeFilecatPath,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.edit_rounded, size: 18, color: Colors.white),
-                  SizedBox(width: 8),
-                  Text(
-                    '更改路径',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                ],
+            child: const Text(
+              '更改路径',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF5B8DEF),
+                letterSpacing: 0.3,
               ),
             ),
           ),
@@ -439,7 +420,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildDirectoryContents() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
@@ -465,24 +446,24 @@ class _MyHomePageState extends State<MyHomePage> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [Color(0xFF5B8DEF), Color(0xFF8B5CF6)],
                   ),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(9),
                 ),
                 child: const Icon(
                   Icons.folder_rounded,
                   color: Colors.white,
-                  size: 20,
+                  size: 18,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               const Text(
                 '目录内容',
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: 16,
                   fontWeight: FontWeight.w800,
                   color: Color(0xFF1E293B),
                   letterSpacing: 0.3,
@@ -497,7 +478,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Expanded(
             child: _directoryContents.isEmpty && !_isLoading
                 ? Center(
@@ -506,14 +487,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         Icon(
                           Icons.folder_open_outlined,
-                          size: 64,
+                          size: 56,
                           color: Colors.grey.shade400,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
                         Text(
                           '文件夹为空',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 15,
                             color: Colors.grey.shade600,
                             fontWeight: FontWeight.w600,
                           ),
