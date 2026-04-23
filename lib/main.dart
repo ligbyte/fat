@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Rust Demo',
+      title: 'Filecat',
       builder: (context, child) => ResponsiveBreakpoints.builder(
         child: child!,
         breakpoints: [
@@ -223,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
               
               // Input fields
               Text(
-                'File Operations',
+                'Shared folder',
                 style: TextStyle(
                   fontSize: ResponsiveValue<double>(context, conditionalValues: [
                     const Condition.equals(name: MOBILE, value: 16),
@@ -260,19 +260,19 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Filecat Directory',
-                              style: TextStyle(
-                                fontSize: ResponsiveValue<double>(context, conditionalValues: [
-                                  const Condition.equals(name: MOBILE, value: 12),
-                                  const Condition.equals(name: TABLET, value: 14),
-                                  const Condition.equals(name: DESKTOP, value: 14),
-                                ]).value,
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
+                            // Text(
+                            //   'Shared folder',
+                            //   style: TextStyle(
+                            //     fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                            //       const Condition.equals(name: MOBILE, value: 12),
+                            //       const Condition.equals(name: TABLET, value: 14),
+                            //       const Condition.equals(name: DESKTOP, value: 14),
+                            //     ]).value,
+                            //     fontWeight: FontWeight.w600,
+                            //     color: Theme.of(context).colorScheme.primary,
+                            //   ),
+                            // ),
+                            // const SizedBox(height: 4),
                             Text(
                               _filecatPath.isEmpty ? 'Loading...' : _filecatPath,
                               style: TextStyle(
