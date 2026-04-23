@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'rust_bridge.dart';
 
 void main() {
@@ -74,7 +76,61 @@ class _MyHomePageState extends State<MyHomePage> {
   String _result = '';
   String _filePath = 'test_file.txt';
   String _fileContent = 'Hello from Flutter!';
+  String _filecatPath = '';
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFilecatPath();
+  }
+
+  void _loadFilecatPath() async {
+    // 先从SharedPreferences读取保存的路径
+    final prefs = await SharedPreferences.getInstance();
+    final savedPath = prefs.getString('filecat_path');
+    
+    if (savedPath != null && savedPath.isNotEmpty) {
+      setState(() {
+        _filecatPath = savedPath;
+      });
+    } else {
+      // 如果没有保存的路径，从Rust获取默认路径
+      final path = RustBridge.getFilecatPath();
+      if (path != null) {
+        // 解析JSON响应获取路径
+        try {
+          final jsonMap = {
+            'success': true,
+            'data': path.contains('"data":"') 
+                ? path.split('"data":"')[1].split('"')[0]
+                : path,
+          };
+          setState(() {
+            _filecatPath = jsonMap['data'] as String;
+          });
+        } catch (e) {
+          setState(() {
+            _filecatPath = path;
+          });
+        }
+      }
+    }
+  }
+
+  void _changeFilecatPath() async {
+    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+    
+    if (selectedDirectory != null) {
+      setState(() {
+        _filecatPath = selectedDirectory;
+      });
+      
+      // 保存到SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('filecat_path', selectedDirectory);
+    }
+  }
 
   void _createFile() async {
     final result = RustBridge.createFile(_filePath);
@@ -179,6 +235,78 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               const SizedBox(height: 12),
+              
+              // Filecat path display
+              Card(
+                child: Padding(
+                  padding: ResponsiveValue<EdgeInsets>(context, conditionalValues: [
+                    const Condition.equals(name: MOBILE, value: EdgeInsets.all(12.0)),
+                    const Condition.equals(name: TABLET, value: EdgeInsets.all(16.0)),
+                    const Condition.equals(name: DESKTOP, value: EdgeInsets.all(16.0)),
+                  ]).value,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.folder,
+                        color: Theme.of(context).colorScheme.secondary,
+                        size: ResponsiveValue<double>(context, conditionalValues: [
+                          const Condition.equals(name: MOBILE, value: 20),
+                          const Condition.equals(name: TABLET, value: 24),
+                          const Condition.equals(name: DESKTOP, value: 24),
+                        ]).value,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Filecat Directory',
+                              style: TextStyle(
+                                fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                                  const Condition.equals(name: MOBILE, value: 12),
+                                  const Condition.equals(name: TABLET, value: 14),
+                                  const Condition.equals(name: DESKTOP, value: 14),
+                                ]).value,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              _filecatPath.isEmpty ? 'Loading...' : _filecatPath,
+                              style: TextStyle(
+                                fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                                  const Condition.equals(name: MOBILE, value: 11),
+                                  const Condition.equals(name: TABLET, value: 12),
+                                  const Condition.equals(name: DESKTOP, value: 13),
+                                ]).value,
+                                color: Colors.grey.shade700,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      OutlinedButton(
+                        onPressed: _changeFilecatPath,
+                        child: Text(
+                          '更改路径',
+                          style: TextStyle(
+                            fontSize: ResponsiveValue<double>(context, conditionalValues: [
+                              const Condition.equals(name: MOBILE, value: 12),
+                              const Condition.equals(name: TABLET, value: 13),
+                              const Condition.equals(name: DESKTOP, value: 14),
+                            ]).value,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               
               Card(
                 child: Padding(

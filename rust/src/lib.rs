@@ -12,6 +12,31 @@ struct FileInfo {
     path: String,
 }
 
+/// 获取用户目录下的filecat文件夹路径，如果不存在则创建
+#[no_mangle]
+pub extern "C" fn get_filecat_path() -> *mut c_char {
+    let home_dir = match dirs::home_dir() {
+        Some(dir) => dir,
+        None => return create_error_response("Failed to get home directory"),
+    };
+    
+    let filecat_path = home_dir.join("filecat");
+    
+    // 如果文件夹不存在，则创建
+    if !filecat_path.exists() {
+        if let Err(e) = fs::create_dir_all(&filecat_path) {
+            return create_error_response(&format!("Failed to create filecat directory: {}", e));
+        }
+    }
+    
+    let path_str = match filecat_path.to_str() {
+        Some(s) => s,
+        None => return create_error_response("Invalid path encoding"),
+    };
+    
+    create_data_response(path_str)
+}
+
 /// 创建文件
 #[no_mangle]
 pub extern "C" fn create_file(path: *const c_char) -> *mut c_char {

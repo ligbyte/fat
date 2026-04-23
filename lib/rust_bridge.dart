@@ -9,6 +9,7 @@ class RustBridge {
   static late Pointer<NativeFunction<Pointer Function(Pointer, Pointer)>> _writeFile;
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _getFileInfo;
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _deleteFile;
+  static late Pointer<NativeFunction<Pointer Function()>> _getFilecatPath;
   static late Pointer<NativeFunction<Void Function(Pointer)>> _freeString;
 
   static void initialize() {
@@ -29,6 +30,7 @@ class RustBridge {
     _writeFile = _dylib.lookup('write_file');
     _getFileInfo = _dylib.lookup('get_file_info');
     _deleteFile = _dylib.lookup('delete_file');
+    _getFilecatPath = _dylib.lookup('get_filecat_path');
     _freeString = _dylib.lookup('free_string');
   }
 
@@ -91,6 +93,17 @@ class RustBridge {
       return result;
     } finally {
       malloc.free(pathPtr);
+    }
+  }
+
+  static String? getFilecatPath() {
+    try {
+      final resultPtr = _getFilecatPath.asFunction<Pointer Function()>()();
+      final result = resultPtr.cast<Utf8>().toDartString();
+      malloc.free(resultPtr);
+      return result;
+    } catch (e) {
+      return null;
     }
   }
 }
