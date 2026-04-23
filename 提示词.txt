@@ -20,3 +20,7 @@ ResponsiveFramework框架源码地址：https://github.com/Codelessly/Responsive
 
 
 更改路径按钮边框颜色改为黑色，边框改细一点，文字改为黑色，边框圆角改小一点
+
+
+请帮我添加需求： 目录内容下方的文件夹列表和文件列表，文件夹的话还保持后面的右箭头不变，如果是文件的话，那么在文件哪一行末尾添加一个复制icon，点击复制icon  将当前文件的相对路径拷贝到系统的剪切板，
+要注意：Windows、MacOS、Linux的剪切板不同

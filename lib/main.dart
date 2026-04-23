@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -500,6 +501,31 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _copyFileRelativePath(Map<String, dynamic> item) {
+    final filePath = item['path'] as String;
+    String relativePath = filePath;
+
+    if (_filecatPath.isNotEmpty && filePath.startsWith(_filecatPath)) {
+      relativePath = filePath.substring(_filecatPath.length);
+      if (relativePath.startsWith('/') || relativePath.startsWith('\\')) {
+        relativePath = relativePath.substring(1);
+      }
+    }
+
+    Clipboard.setData(ClipboardData(text: relativePath));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('已复制: $relativePath'),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
   Widget _buildDirectoryItem(Map<String, dynamic> item, int indentLevel) {
     final isDir = item['is_dir'] as bool;
     final name = item['name'] as String;
@@ -553,7 +579,23 @@ class _MyHomePageState extends State<MyHomePage> {
                   isExpanded ? Icons.expand_more : Icons.chevron_right,
                   color: Colors.grey.shade600,
                 )
-              : null,
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkWell(
+                      onTap: () => _copyFileRelativePath(item),
+                      borderRadius: BorderRadius.circular(4),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.copy_rounded,
+                          color: Colors.grey.shade600,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
           onTap: isDir ? () => _toggleFolder(path) : null,
         ),
         if (isDir && isExpanded && _folderContents.containsKey(path))
