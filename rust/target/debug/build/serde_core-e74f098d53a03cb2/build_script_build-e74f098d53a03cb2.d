@@ -1,5 +1,0 @@
-F:\AI\fat\rust\target\debug\build\serde_core-e74f098d53a03cb2\build_script_build-e74f098d53a03cb2.d: C:\Users\dev\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde_core-1.0.228\build.rs
-
-F:\AI\fat\rust\target\debug\build\serde_core-e74f098d53a03cb2\build_script_build-e74f098d53a03cb2.exe: C:\Users\dev\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde_core-1.0.228\build.rs
-
-C:\Users\dev\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde_core-1.0.228\build.rs:
