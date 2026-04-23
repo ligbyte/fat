@@ -217,9 +217,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   const Condition.equals(name: DESKTOP, value: 20.0),
                 ]).value,
               ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: ResponsiveValue<double>(context, conditionalValues: [
+                    const Condition.equals(name: MOBILE, value: double.infinity),
+                    const Condition.equals(name: TABLET, value: 800),
+                    const Condition.equals(name: DESKTOP, value: 1200),
+                    const Condition.equals(name: '4K', value: 1400),
+                  ]).value,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
               
               // Input fields
               Text(
@@ -553,7 +563,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ],
-          ),
+                ),
+              ),
+            ),
         );
           },
         ),
