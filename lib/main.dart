@@ -128,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
             'name': item['name'] as String,
             'is_dir': item['is_dir'] as bool,
             'size': item['size'] as int,
+            'modified': item['modified'] as int? ?? 0,
             'path': item['path'] as String,
           }).toList();
           _isLoading = false;
@@ -182,6 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
             'name': item['name'] as String,
             'is_dir': item['is_dir'] as bool,
             'size': item['size'] as int,
+            'modified': item['modified'] as int? ?? 0,
             'path': item['path'] as String,
           }).toList();
         });
@@ -216,6 +218,19 @@ class _MyHomePageState extends State<MyHomePage> {
     final i = (log(bytes.toDouble()) / log(k)).floor();
     final index = i.clamp(0, sizes.length - 1);
     return '${(bytes / pow(k, index)).toStringAsFixed(1)} ${sizes[index]}';
+  }
+
+  String _formatDateTime(int timestamp) {
+    if (timestamp == 0) return '';
+    final dt = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    final year = dt.year;
+    final month = dt.month;
+    final day = dt.day;
+    final hour = dt.hour.toString().padLeft(2, '0');
+    final minute = dt.minute.toString().padLeft(2, '0');
+    final second = dt.second.toString().padLeft(2, '0');
+    
+    return '$year年$month月$day日，$hour:$minute:$second';
   }
 
   @override
@@ -512,11 +527,15 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
 
-    Clipboard.setData(ClipboardData(text: relativePath));
+    relativePath = relativePath.replaceAll('\\', '/');
+
+    final fullUrl = 'http://192.168.2.171:9202/file/$relativePath';
+
+    Clipboard.setData(ClipboardData(text: fullUrl));
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('已复制: $relativePath'),
+        content: Text('已复制: $fullUrl'),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -568,7 +587,7 @@ class _MyHomePageState extends State<MyHomePage> {
           subtitle: isDir 
               ? null 
               : Text(
-                  _formatFileSize(size),
+                  '${_formatFileSize(size)}  ${_formatDateTime(item['modified'] as int? ?? 0)}',
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.grey.shade600,

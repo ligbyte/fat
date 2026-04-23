@@ -63,16 +63,24 @@ pub extern "C" fn list_directory(path: *const c_char) -> *mut c_char {
                         .unwrap_or_default();
                     
                     let is_dir = path.is_dir();
+                    let metadata = fs::metadata(&path).ok();
                     let size = if is_dir { 
                         0 
                     } else {
-                        fs::metadata(&path).map(|m| m.len()).unwrap_or(0)
+                        metadata.as_ref().map(|m| m.len()).unwrap_or(0)
                     };
+                    
+                    let modified = metadata.as_ref()
+                        .and_then(|m| m.modified().ok())
+                        .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
+                        .map(|d| d.as_millis() as u64)
+                        .unwrap_or(0);
                     
                     items.push(serde_json::json!({
                         "name": name,
                         "is_dir": is_dir,
                         "size": size,
+                        "modified": modified,
                         "path": path.to_string_lossy().to_string()
                     }));
                 }
