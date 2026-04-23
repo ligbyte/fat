@@ -395,11 +395,11 @@ class _MyHomePageState extends State<MyHomePage> {
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               side: const BorderSide(
-                color: Color(0xFF5B8DEF),
-                width: 2,
+                color: Colors.black,
+                width: 1,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(5),
               ),
               backgroundColor: const Color(0xFF5B8DEF).withOpacity(0.05),
             ),
@@ -408,7 +408,7 @@ class _MyHomePageState extends State<MyHomePage> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF5B8DEF),
+                color: Colors.black,
                 letterSpacing: 0.3,
               ),
             ),
@@ -445,31 +445,16 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(9),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF5B8DEF), Color(0xFF8B5CF6)],
-                  ),
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: const Icon(
-                  Icons.folder_rounded,
-                  color: Colors.white,
-                  size: 18,
-                ),
-              ),
-              const SizedBox(width: 10),
-              const Text(
-                '目录内容',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF1E293B),
-                  letterSpacing: 0.3,
-                ),
-              ),
-              const Spacer(),
+          const Text(
+            '目录内容',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF1E293B),
+              letterSpacing: 0.3,
+            ),
+          ),
+          const Spacer(),
               if (_isLoading)
                 const SizedBox(
                   width: 20,
