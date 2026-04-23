@@ -37,6 +37,69 @@ pub extern "C" fn get_filecat_path() -> *mut c_char {
     create_data_response(path_str)
 }
 
+/// 列出目录内容
+#[no_mangle]
+pub extern "C" fn list_directory(path: *const c_char) -> *mut c_char {
+    if path.is_null() {
+        return create_error_response("Path pointer is null");
+    }
+    
+    let path_str = unsafe { 
+        match CStr::from_ptr(path).to_str() {
+            Ok(s) => s,
+            Err(_) => return create_error_response("Invalid UTF-8 in path"),
+        }
+    };
+    
+    match fs::read_dir(path_str) {
+        Ok(entries) => {
+            let mut items: Vec<serde_json::Value> = Vec::new();
+            
+            for entry in entries {
+                if let Ok(entry) = entry {
+                    let path = entry.path();
+                    let name = path.file_name()
+                        .map(|n| n.to_string_lossy().to_string())
+                        .unwrap_or_default();
+                    
+                    let is_dir = path.is_dir();
+                    let size = if is_dir { 
+                        0 
+                    } else {
+                        fs::metadata(&path).map(|m| m.len()).unwrap_or(0)
+                    };
+                    
+                    items.push(serde_json::json!({
+                        "name": name,
+                        "is_dir": is_dir,
+                        "size": size,
+                        "path": path.to_string_lossy().to_string()
+                    }));
+                }
+            }
+            
+            // 排序：文件夹在前，然后按名称排序
+            items.sort_by(|a, b| {
+                let a_is_dir = a["is_dir"].as_bool().unwrap_or(false);
+                let b_is_dir = b["is_dir"].as_bool().unwrap_or(false);
+                
+                match (a_is_dir, b_is_dir) {
+                    (true, false) => std::cmp::Ordering::Less,
+                    (false, true) => std::cmp::Ordering::Greater,
+                    _ => a["name"].as_str().unwrap_or("")
+                        .cmp(&b["name"].as_str().unwrap_or(""))
+                }
+            });
+            
+            match serde_json::to_string(&items) {
+                Ok(json_str) => create_data_response(&json_str),
+                Err(e) => create_error_response(&format!("Serialization error: {}", e)),
+            }
+        },
+        Err(e) => create_error_response(&format!("Failed to read directory: {}", e)),
+    }
+}
+
 /// 创建文件
 #[no_mangle]
 pub extern "C" fn create_file(path: *const c_char) -> *mut c_char {

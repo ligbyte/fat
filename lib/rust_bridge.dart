@@ -10,13 +10,14 @@ class RustBridge {
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _getFileInfo;
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _deleteFile;
   static late Pointer<NativeFunction<Pointer Function()>> _getFilecatPath;
+  static late Pointer<NativeFunction<Pointer Function(Pointer)>> _listDirectory;
   static late Pointer<NativeFunction<Void Function(Pointer)>> _freeString;
 
   static void initialize() {
     String libraryPath = '';
 
     if (Platform.isWindows) {
-      libraryPath = 'fat.dll'; // DLL在运行目录中
+      libraryPath = 'fat.dll';
     } else if (Platform.isLinux) {
       libraryPath = 'libfat.so';
     } else if (Platform.isMacOS) {
@@ -31,6 +32,7 @@ class RustBridge {
     _getFileInfo = _dylib.lookup('get_file_info');
     _deleteFile = _dylib.lookup('delete_file');
     _getFilecatPath = _dylib.lookup('get_filecat_path');
+    _listDirectory = _dylib.lookup('list_directory');
     _freeString = _dylib.lookup('free_string');
   }
 
@@ -104,6 +106,18 @@ class RustBridge {
       return result;
     } catch (e) {
       return null;
+    }
+  }
+
+  static String? listDirectory(String path) {
+    final pathPtr = path.toNativeUtf8();
+    try {
+      final resultPtr = _listDirectory.asFunction<Pointer Function(Pointer)>()(pathPtr);
+      final result = resultPtr.cast<Utf8>().toDartString();
+      malloc.free(resultPtr);
+      return result;
+    } finally {
+      malloc.free(pathPtr);
     }
   }
 }
