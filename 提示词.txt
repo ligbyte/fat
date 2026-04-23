@@ -12,3 +12,6 @@ ResponsiveFramework框架源码地址：https://github.com/Codelessly/Responsive
 请帮我实现逻辑：判断当前系统(Windows、MacOS、Linux)用户的用户目录下是否存在文件夹：filecat，如果不存在，那么创建filecat文件夹，
 在 Flutter Rust File Operations  文字下方添加一行，展示filecat文件夹路径，展示的路径后方添加一个按钮 "更改路径"，点击更改按钮，可以更换展示的文件夹路径，
 注意只能选择文件夹作为路径，如果有更改过文件夹路径，那么记住该文件夹路径，以后每次打开软件都是展示更改后的文件夹路径
+
+
+目前该项目的UI比较丑，请帮我修改UI，要符合中国人的审美观，要尽可能的漂亮
