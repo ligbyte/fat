@@ -4,6 +4,8 @@ import 'package:ffi/ffi.dart';
 
 class RustBridge {
   static late DynamicLibrary _dylib;
+  
+  // FFI lookup signatures
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _createFile;
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _readFile;
   static late Pointer<NativeFunction<Pointer Function(Pointer, Pointer)>> _writeFile;
@@ -12,6 +14,11 @@ class RustBridge {
   static late Pointer<NativeFunction<Pointer Function()>> _getFilecatPath;
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _listDirectory;
   static late Pointer<NativeFunction<Void Function(Pointer)>> _freeString;
+  
+  // New static server functions
+  static late Pointer<NativeFunction<Pointer Function(Pointer)>> _startStaticServer;
+  static late Pointer<NativeFunction<Pointer Function()>> _stopStaticServer;
+  static late Pointer<NativeFunction<Pointer Function(Pointer)>> _updateServerPath;
 
   static void initialize() {
     String libraryPath = '';
@@ -34,6 +41,10 @@ class RustBridge {
     _getFilecatPath = _dylib.lookup('get_filecat_path');
     _listDirectory = _dylib.lookup('list_directory');
     _freeString = _dylib.lookup('free_string');
+    
+    _startStaticServer = _dylib.lookup('start_static_server');
+    _stopStaticServer = _dylib.lookup('stop_static_server');
+    _updateServerPath = _dylib.lookup('update_server_path');
   }
 
   static String? createFile(String path) {
@@ -41,7 +52,7 @@ class RustBridge {
     try {
       final resultPtr = _createFile.asFunction<Pointer Function(Pointer)>()(pathPtr);
       final result = resultPtr.cast<Utf8>().toDartString();
-      malloc.free(resultPtr);
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
       return result;
     } finally {
       malloc.free(pathPtr);
@@ -53,7 +64,7 @@ class RustBridge {
     try {
       final resultPtr = _readFile.asFunction<Pointer Function(Pointer)>()(pathPtr);
       final result = resultPtr.cast<Utf8>().toDartString();
-      malloc.free(resultPtr);
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
       return result;
     } finally {
       malloc.free(pathPtr);
@@ -66,7 +77,7 @@ class RustBridge {
     try {
       final resultPtr = _writeFile.asFunction<Pointer Function(Pointer, Pointer)>()(pathPtr, contentPtr);
       final result = resultPtr.cast<Utf8>().toDartString();
-      malloc.free(resultPtr);
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
       return result;
     } finally {
       malloc.free(pathPtr);
@@ -79,7 +90,7 @@ class RustBridge {
     try {
       final resultPtr = _getFileInfo.asFunction<Pointer Function(Pointer)>()(pathPtr);
       final result = resultPtr.cast<Utf8>().toDartString();
-      malloc.free(resultPtr);
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
       return result;
     } finally {
       malloc.free(pathPtr);
@@ -91,7 +102,7 @@ class RustBridge {
     try {
       final resultPtr = _deleteFile.asFunction<Pointer Function(Pointer)>()(pathPtr);
       final result = resultPtr.cast<Utf8>().toDartString();
-      malloc.free(resultPtr);
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
       return result;
     } finally {
       malloc.free(pathPtr);
@@ -101,8 +112,9 @@ class RustBridge {
   static String? getFilecatPath() {
     try {
       final resultPtr = _getFilecatPath.asFunction<Pointer Function()>()();
+      if (resultPtr == nullptr) return null;
       final result = resultPtr.cast<Utf8>().toDartString();
-      malloc.free(resultPtr);
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
       return result;
     } catch (e) {
       return null;
@@ -114,7 +126,42 @@ class RustBridge {
     try {
       final resultPtr = _listDirectory.asFunction<Pointer Function(Pointer)>()(pathPtr);
       final result = resultPtr.cast<Utf8>().toDartString();
-      malloc.free(resultPtr);
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
+      return result;
+    } finally {
+      malloc.free(pathPtr);
+    }
+  }
+
+  static String? startStaticServer(String path) {
+    final pathPtr = path.toNativeUtf8();
+    try {
+      final resultPtr = _startStaticServer.asFunction<Pointer Function(Pointer)>()(pathPtr);
+      final result = resultPtr.cast<Utf8>().toDartString();
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
+      return result;
+    } finally {
+      malloc.free(pathPtr);
+    }
+  }
+
+  static String? stopStaticServer() {
+    try {
+      final resultPtr = _stopStaticServer.asFunction<Pointer Function()>()();
+      final result = resultPtr.cast<Utf8>().toDartString();
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
+      return result;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static String? updateServerPath(String path) {
+    final pathPtr = path.toNativeUtf8();
+    try {
+      final resultPtr = _updateServerPath.asFunction<Pointer Function(Pointer)>()(pathPtr);
+      final result = resultPtr.cast<Utf8>().toDartString();
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
       return result;
     } finally {
       malloc.free(pathPtr);

@@ -4,6 +4,14 @@ use std::os::raw::c_char;
 use std::ptr;
 use serde::{Deserialize, Serialize};
 use serde_json;
+use actix_web::{web, App, HttpServer, Responder, dev::ServerHandle};
+use actix_files;
+use once_cell::sync::Lazy;
+use std::sync::Mutex;
+use std::thread;
+
+static SERVER_HANDLE: Lazy<Mutex<Option<ServerHandle>>> = Lazy::new(|| Mutex::new(None));
+static CURRENT_PATH: Lazy<Mutex<String>> = Lazy::new(|| Mutex::new("F:/apk".to_string()));
 
 #[derive(Serialize, Deserialize)]
 struct FileInfo {
@@ -271,4 +279,94 @@ pub extern "C" fn free_string(ptr: *mut c_char) {
             let _ = CString::from_raw(ptr);
         }
     }
+}
+
+// --- 静态文件服务器逻辑 ---
+
+async fn index() -> impl Responder {
+    "Hello world!"
+}
+
+async fn health_check() -> impl Responder {
+    "OK"
+}
+
+/// 启动静态文件服务器
+#[no_mangle]
+pub extern "C" fn start_static_server(path: *const c_char) -> *mut c_char {
+    if path.is_null() {
+        return create_error_response("Path pointer is null");
+    }
+
+    let path_str = unsafe {
+        match CStr::from_ptr(path).to_str() {
+            Ok(s) => s.to_string(),
+            Err(_) => return create_error_response("Invalid UTF-8 in path"),
+        }
+    };
+
+    // 更新当前路径
+    {
+        let mut current_path = CURRENT_PATH.lock().unwrap();
+        *current_path = path_str.clone();
+    }
+
+    // 如果已经在运行，先停止
+    stop_static_server_internal();
+
+    // 在新线程中启动服务器
+    thread::spawn(move || {
+        let sys = actix_rt::System::new();
+        sys.block_on(async {
+            let server = HttpServer::new(move || {
+                let p = CURRENT_PATH.lock().unwrap().clone();
+                App::new()
+                    .service(actix_files::Files::new("/file", &p).show_files_listing())
+                    .service(web::scope("").route("/health", web::get().to(health_check)))
+                    .service(web::scope("/app").route("/hello", web::get().to(index)))
+            })
+            .bind(("0.0.0.0", 9202));
+
+            match server {
+                Ok(srv) => {
+                    let s = srv.run();
+                    let handle = s.handle();
+                    {
+                        let mut global_handle = SERVER_HANDLE.lock().unwrap();
+                        *global_handle = Some(handle);
+                    }
+                    let _ = s.await;
+                }
+                Err(e) => {
+                    eprintln!("Failed to bind server: {}", e);
+                }
+            }
+        });
+    });
+
+    create_success_response(&format!("Server started on port 9202 with path: {}", path_str))
+}
+
+/// 停止服务器的内部辅助函数
+fn stop_static_server_internal() {
+    let mut handle = SERVER_HANDLE.lock().unwrap();
+    if let Some(server_handle) = handle.take() {
+        // 停止服务器，参数为 true 表示优雅停止
+        let _ = server_handle.stop(true);
+        // 给一点时间让服务器停止
+        thread::sleep(std::time::Duration::from_millis(500));
+    }
+}
+
+/// 停止静态文件服务器
+#[no_mangle]
+pub extern "C" fn stop_static_server() -> *mut c_char {
+    stop_static_server_internal();
+    create_success_response("Server stopped")
+}
+
+/// 更新共享文件夹路径并重启服务
+#[no_mangle]
+pub extern "C" fn update_server_path(path: *const c_char) -> *mut c_char {
+    start_static_server(path)
 }

@@ -27,3 +27,13 @@ ResponsiveFramework框架源码地址：https://github.com/Codelessly/Responsive
 
 
 复制的相对路径中的  \  全部使用  /  替换
+
+
+
+F:\rust\rust__web\actix-web-static_file  这是一个静态文件服务器项目，
+请帮我将F:\rust\rust__web\actix-web-static_file 项目合入当前项目，
+.service(actix_files::Files::new("/file", "F:/apk").show_files_listing()) 这行是设置共享文件夹路径的，请将共享文件夹路径"F:/apk"
+修改成当前项目选择的路径，更改路径后要重启服务 保证共享文件夹服务生效，请严格按照 F:\rust\rust__web\actix-web-static_file 的实现来进行修改，
+因为 F:\rust\rust__web\actix-web-static_file  直接运行时可用的
+
+请帮我修复BUG：使用http://192.168.2.171:9202/file 不能访问文件列表

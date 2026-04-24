@@ -92,6 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _filecatPath = savedPath;
       });
       _loadDirectoryContents(savedPath);
+      // 启动静态文件服务器
+      RustBridge.startStaticServer(savedPath);
     } else {
       final path = RustBridge.getFilecatPath();
       if (path != null) {
@@ -103,11 +105,15 @@ class _MyHomePageState extends State<MyHomePage> {
             _filecatPath = pathStr;
           });
           _loadDirectoryContents(pathStr);
+          // 启动静态文件服务器
+          RustBridge.startStaticServer(pathStr);
         } catch (e) {
           setState(() {
             _filecatPath = path;
           });
           _loadDirectoryContents(path);
+          // 启动静态文件服务器
+          RustBridge.startStaticServer(path);
         }
       }
     }
@@ -208,6 +214,8 @@ class _MyHomePageState extends State<MyHomePage> {
       await prefs.setString('filecat_path', selectedDirectory);
       
       _loadDirectoryContents(selectedDirectory);
+      // 更新静态文件服务器路径并重启
+      RustBridge.updateServerPath(selectedDirectory);
     }
   }
 
