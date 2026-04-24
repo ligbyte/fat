@@ -19,10 +19,6 @@ flutter run -d ios
 
 ```
 
-
-
-
-
 # Flutter Web配置：
 
 ```
@@ -59,6 +55,8 @@ dart migrate --apply-changes
 # 打包命令
 
 ```shell
+先执行： cd rust; cargo build --release
+
 flutter build apk
 flutter build appbundle
 
@@ -73,12 +71,8 @@ flutter build linux
 
 ```
 
-
 C:\Users\dev>rustc --version
 rustc 1.91.0 (f8297e351 2025-10-28)
-
-
-
 
 Android Studio Ladybug | 2024.2.1 Patch 2
 Build #AI-242.23339.11.2421.12550806, built on October 25, 2024
