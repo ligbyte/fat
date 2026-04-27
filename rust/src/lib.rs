@@ -4,6 +4,7 @@ use std::os::raw::c_char;
 use std::ptr;
 use serde::{Deserialize, Serialize};
 use serde_json;
+use local_ip_address::local_ip;
 use actix_web::{web, App, HttpServer, Responder, dev::ServerHandle};
 use actix_files;
 use once_cell::sync::Lazy;
@@ -369,4 +370,13 @@ pub extern "C" fn stop_static_server() -> *mut c_char {
 #[no_mangle]
 pub extern "C" fn update_server_path(path: *const c_char) -> *mut c_char {
     start_static_server(path)
+}
+
+/// 获取本机内网IPv4地址
+#[no_mangle]
+pub extern "C" fn get_local_ip() -> *mut c_char {
+    match local_ip() {
+        Ok(ip) => create_data_response(&ip.to_string()),
+        Err(e) => create_error_response(&format!("Failed to get local IP: {}", e)),
+    }
 }

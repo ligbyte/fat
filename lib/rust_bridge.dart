@@ -19,6 +19,7 @@ class RustBridge {
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _startStaticServer;
   static late Pointer<NativeFunction<Pointer Function()>> _stopStaticServer;
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _updateServerPath;
+  static late Pointer<NativeFunction<Pointer Function()>> _getLocalIp;
 
   static void initialize() {
     String libraryPath = '';
@@ -45,6 +46,7 @@ class RustBridge {
     _startStaticServer = _dylib.lookup('start_static_server');
     _stopStaticServer = _dylib.lookup('stop_static_server');
     _updateServerPath = _dylib.lookup('update_server_path');
+    _getLocalIp = _dylib.lookup('get_local_ip');
   }
 
   static String? createFile(String path) {
@@ -165,6 +167,17 @@ class RustBridge {
       return result;
     } finally {
       malloc.free(pathPtr);
+    }
+  }
+
+  static String? getLocalIp() {
+    try {
+      final resultPtr = _getLocalIp.asFunction<Pointer Function()>()();
+      final result = resultPtr.cast<Utf8>().toDartString();
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
+      return result;
+    } catch (e) {
+      return null;
     }
   }
 }

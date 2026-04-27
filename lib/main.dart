@@ -537,7 +537,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
     relativePath = relativePath.replaceAll('\\', '/');
 
-    final fullUrl = 'http://192.168.2.171:9202/file/$relativePath';
+    final ipResult = RustBridge.getLocalIp();
+    String ip = '127.0.0.1';
+    if (ipResult != null) {
+      try {
+        final Map<String, dynamic> json = jsonDecode(ipResult);
+        if (json['success'] == true) {
+          ip = json['data'] as String;
+        }
+      } catch (e) {
+        debugPrint('Error parsing local IP: $e');
+      }
+    }
+
+    final fullUrl = 'http://$ip:9202/file/$relativePath';
 
     Clipboard.setData(ClipboardData(text: fullUrl));
 
