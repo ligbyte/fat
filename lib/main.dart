@@ -622,18 +622,7 @@ class _MyHomePageState extends State<MyHomePage> {
               : Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    InkWell(
-                      onTap: () => _copyFileRelativePath(item),
-                      borderRadius: BorderRadius.circular(4),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Icon(
-                          Icons.copy_rounded,
-                          color: Colors.grey.shade600,
-                          size: 20,
-                        ),
-                      ),
-                    ),
+                    CopyButton(onTap: () => _copyFileRelativePath(item)),
                   ],
                 ),
           onTap: isDir ? () => _toggleFolder(path) : null,
@@ -643,6 +632,45 @@ class _MyHomePageState extends State<MyHomePage> {
             _buildDirectoryItem(childItem, indentLevel + 1),
           ).toList(),
       ],
+    );
+  }
+}
+
+class CopyButton extends StatefulWidget {
+  final VoidCallback onTap;
+
+  const CopyButton({super.key, required this.onTap});
+
+  @override
+  State<CopyButton> createState() => _CopyButtonState();
+}
+
+class _CopyButtonState extends State<CopyButton> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onTap();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: _isPressed 
+              ? const Color(0xFF5B8DEF).withOpacity(0.1) 
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          Icons.copy_rounded,
+          color: _isPressed ? const Color(0xFF5B8DEF) : Colors.grey.shade600,
+          size: 20,
+        ),
+      ),
     );
   }
 }

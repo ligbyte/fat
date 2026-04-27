@@ -55,3 +55,5 @@ fn main() {
 
 可以获取本机内网IPv4地址， 请帮我使用以上代码替换  final fullUrl = 'http://192.168.2.171:9202/file/$relativePath';  中的 192.168.2.171 
 以为每台PC主机的内网IPv4地址都不一样
+
+
