@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           elevation: 0,
           shadowColor: const Color(0xFF5B8DEF).withOpacity(0.08),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(10),
           ),
           margin: const EdgeInsets.only(bottom: 20),
         ),
@@ -365,7 +365,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Color(0xFFF8FAFC),
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
         boxShadow: [
           BoxShadow(
@@ -468,7 +468,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Color(0xFFF8FAFC),
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
         boxShadow: [
           BoxShadow(
