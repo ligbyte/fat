@@ -37,3 +37,21 @@ F:\rust\rust__web\actix-web-static_file  这是一个静态文件服务器项目
 因为 F:\rust\rust__web\actix-web-static_file  直接运行时可用的
 
 请帮我修复BUG：使用http://192.168.2.171:9202/file 不能访问文件列表
+
+
+
+使用rust库：
+[dependencies]
+local-ip-address = "0.6.12"
+
+示例代码：
+use local_ip_address::local_ip;
+
+fn main() {
+    let my_local_ip = local_ip().unwrap();
+
+    println!("This is my local IP address: {:?}", my_local_ip);
+}
+
+可以获取本机内网IPv4地址， 请帮我使用以上代码替换  final fullUrl = 'http://192.168.2.171:9202/file/$relativePath';  中的 192.168.2.171 
+以为每台PC主机的内网IPv4地址都不一样
