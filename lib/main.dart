@@ -322,9 +322,11 @@ class _MyHomePageState extends State<MyHomePage> {
               }
               
               return Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: horizontalPadding,
-                  vertical: 16,
+                padding: EdgeInsets.only(
+                  left: horizontalPadding,
+                  right: horizontalPadding,
+                  top: 16,
+                  bottom: 8,
                 ),
                 child: Center(
                   child: ConstrainedBox(
@@ -337,7 +339,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Expanded(
                           child: _buildDirectoryContents(),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 4),
                         _buildAutostartCheckbox(),
                       ],
                     ),
@@ -580,70 +582,71 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildAutostartCheckbox() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Text(
+            '当前服务正在运行',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey.shade700,
+            ),
+          ),
           Row(
             children: [
-              Icon(
-                Icons.power_settings_new_rounded,
-                size: 20,
-                color: Colors.grey.shade600,
-              ),
-              const SizedBox(width: 10),
               Text(
                 '开机自启动',
                 style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
                   color: Colors.grey.shade700,
                 ),
               ),
+              const SizedBox(width: 4),
+              Transform.scale(
+                scale: 0.75,
+                child: Switch(
+                  value: _autostartEnabled,
+                  onChanged: (value) async {
+                    final prefs = await SharedPreferences.getInstance();
+                    if (value) {
+                      final result = RustBridge.enableAutostart('FileCat');
+                      if (result != null) {
+                        try {
+                          final json = jsonDecode(result);
+                          if (json['success'] == true) {
+                            await prefs.setBool('autostart_enabled', true);
+                            setState(() {
+                              _autostartEnabled = true;
+                            });
+                          }
+                        } catch (e) {
+                          debugPrint('Error enabling autostart: $e');
+                        }
+                      }
+                    } else {
+                      final result = RustBridge.disableAutostart('FileCat');
+                      if (result != null) {
+                        try {
+                          final json = jsonDecode(result);
+                          if (json['success'] == true) {
+                            await prefs.setBool('autostart_enabled', false);
+                            setState(() {
+                              _autostartEnabled = false;
+                            });
+                          }
+                        } catch (e) {
+                          debugPrint('Error disabling autostart: $e');
+                        }
+                      }
+                    }
+                  },
+                  activeColor: const Color(0xFF5B8DEF),
+                ),
+              ),
             ],
-          ),
-          Switch(
-            value: _autostartEnabled,
-            onChanged: (value) async {
-              final prefs = await SharedPreferences.getInstance();
-              if (value) {
-                final result = RustBridge.enableAutostart('FileCat');
-                if (result != null) {
-                  try {
-                    final json = jsonDecode(result);
-                    if (json['success'] == true) {
-                      await prefs.setBool('autostart_enabled', true);
-                      setState(() {
-                        _autostartEnabled = true;
-                      });
-                    }
-                  } catch (e) {
-                    debugPrint('Error enabling autostart: $e');
-                  }
-                }
-              } else {
-                final result = RustBridge.disableAutostart('FileCat');
-                if (result != null) {
-                  try {
-                    final json = jsonDecode(result);
-                    if (json['success'] == true) {
-                      await prefs.setBool('autostart_enabled', false);
-                      setState(() {
-                        _autostartEnabled = false;
-                      });
-                    }
-                  } catch (e) {
-                    debugPrint('Error disabling autostart: $e');
-                  }
-                }
-              }
-            },
-            activeColor: const Color(0xFF5B8DEF),
           ),
         ],
       ),
