@@ -76,11 +76,21 @@ class _MyHomePageState extends State<MyHomePage> {
   Map<String, bool> _expandedFolders = {};
   Map<String, List<Map<String, dynamic>>> _folderContents = {};
   bool _isLoading = false;
+  bool _autostartEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _loadFilecatPath();
+    _loadAutostartPreference();
+  }
+
+  void _loadAutostartPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    final autostartEnabled = prefs.getBool('autostart_enabled') ?? false;
+    setState(() {
+      _autostartEnabled = autostartEnabled;
+    });
   }
 
   void _loadFilecatPath() async {
@@ -327,6 +337,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         Expanded(
                           child: _buildDirectoryContents(),
                         ),
+                        const SizedBox(height: 12),
+                        _buildAutostartCheckbox(),
                       ],
                     ),
                   ),
@@ -418,21 +430,21 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: _changeFilecatPath,
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              side: const BorderSide(
-                color: Colors.black,
+              side: BorderSide(
+                color: Colors.grey.shade400,
                 width: 1,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
-              backgroundColor: const Color(0xFF5B8DEF).withOpacity(0.05),
+              backgroundColor: Colors.grey.shade100,
             ),
-            child: const Text(
+            child: Text(
               '更改路径',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: Colors.black,
+                color: Colors.grey.shade600,
                 letterSpacing: 0.3,
               ),
             ),
@@ -562,6 +574,78 @@ class _MyHomePageState extends State<MyHomePage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAutostartCheckbox() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.power_settings_new_rounded,
+                size: 20,
+                color: Colors.grey.shade600,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                '开机自启动',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+            ],
+          ),
+          Switch(
+            value: _autostartEnabled,
+            onChanged: (value) async {
+              final prefs = await SharedPreferences.getInstance();
+              if (value) {
+                final result = RustBridge.enableAutostart('FileCat');
+                if (result != null) {
+                  try {
+                    final json = jsonDecode(result);
+                    if (json['success'] == true) {
+                      await prefs.setBool('autostart_enabled', true);
+                      setState(() {
+                        _autostartEnabled = true;
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint('Error enabling autostart: $e');
+                  }
+                }
+              } else {
+                final result = RustBridge.disableAutostart('FileCat');
+                if (result != null) {
+                  try {
+                    final json = jsonDecode(result);
+                    if (json['success'] == true) {
+                      await prefs.setBool('autostart_enabled', false);
+                      setState(() {
+                        _autostartEnabled = false;
+                      });
+                    }
+                  } catch (e) {
+                    debugPrint('Error disabling autostart: $e');
+                  }
+                }
+              }
+            },
+            activeColor: const Color(0xFF5B8DEF),
+          ),
+        ],
       ),
     );
   }

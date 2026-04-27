@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:convert';
 import 'package:ffi/ffi.dart';
 
 class RustBridge {
@@ -20,6 +21,9 @@ class RustBridge {
   static late Pointer<NativeFunction<Pointer Function()>> _stopStaticServer;
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _updateServerPath;
   static late Pointer<NativeFunction<Pointer Function()>> _getLocalIp;
+  static late Pointer<NativeFunction<Pointer Function(Pointer)>> _enableAutostart;
+  static late Pointer<NativeFunction<Pointer Function(Pointer)>> _disableAutostart;
+  static late Pointer<NativeFunction<Pointer Function(Pointer)>> _isAutostartEnabled;
 
   static void initialize() {
     String libraryPath = '';
@@ -47,6 +51,9 @@ class RustBridge {
     _stopStaticServer = _dylib.lookup('stop_static_server');
     _updateServerPath = _dylib.lookup('update_server_path');
     _getLocalIp = _dylib.lookup('get_local_ip');
+    _enableAutostart = _dylib.lookup('enable_autostart');
+    _disableAutostart = _dylib.lookup('disable_autostart');
+    _isAutostartEnabled = _dylib.lookup('is_autostart_enabled');
   }
 
   static String? createFile(String path) {
@@ -178,6 +185,47 @@ class RustBridge {
       return result;
     } catch (e) {
       return null;
+    }
+  }
+
+  static String? enableAutostart(String appName) {
+    final appNamePtr = appName.toNativeUtf8();
+    try {
+      final resultPtr = _enableAutostart.asFunction<Pointer Function(Pointer)>()(appNamePtr);
+      final result = resultPtr.cast<Utf8>().toDartString();
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
+      return result;
+    } finally {
+      malloc.free(appNamePtr);
+    }
+  }
+
+  static String? disableAutostart(String appName) {
+    final appNamePtr = appName.toNativeUtf8();
+    try {
+      final resultPtr = _disableAutostart.asFunction<Pointer Function(Pointer)>()(appNamePtr);
+      final result = resultPtr.cast<Utf8>().toDartString();
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
+      return result;
+    } finally {
+      malloc.free(appNamePtr);
+    }
+  }
+
+  static bool isAutostartEnabled(String appName) {
+    final appNamePtr = appName.toNativeUtf8();
+    try {
+      final resultPtr = _isAutostartEnabled.asFunction<Pointer Function(Pointer)>()(appNamePtr);
+      final result = resultPtr.cast<Utf8>().toDartString();
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
+      try {
+        final Map<String, dynamic> json = jsonDecode(result);
+        return json['data'] == true;
+      } catch (e) {
+        return false;
+      }
+    } finally {
+      malloc.free(appNamePtr);
     }
   }
 }

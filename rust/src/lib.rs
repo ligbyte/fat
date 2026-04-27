@@ -380,3 +380,228 @@ pub extern "C" fn get_local_ip() -> *mut c_char {
         Err(e) => create_error_response(&format!("Failed to get local IP: {}", e)),
     }
 }
+
+// --- 开机自启动逻辑 ---
+
+#[cfg(target_os = "windows")]
+pub mod autostart {
+    use std::error::Error;
+    use std::path::Path;
+    use winreg::enums::*;
+    use winreg::RegKey;
+
+    pub fn enable(app_name: &str, app_path: &Path) -> Result<(), Box<dyn Error>> {
+        let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+        let run_key = hkcu.open_subkey_with_flags(
+            "Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+            KEY_SET_VALUE | KEY_READ,
+        )?;
+        let full_command = format!("\"{}\"", app_path.display());
+        run_key.set_value(app_name, &full_command)?;
+        Ok(())
+    }
+
+    pub fn disable(app_name: &str) -> Result<(), Box<dyn Error>> {
+        let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+        let run_key = hkcu.open_subkey_with_flags(
+            "Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+            KEY_SET_VALUE | KEY_READ,
+        )?;
+        let _ = run_key.delete_value(app_name);
+        Ok(())
+    }
+
+    pub fn is_enabled(app_name: &str, app_path: &Path) -> Result<bool, Box<dyn Error>> {
+        let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+        let run_key = hkcu.open_subkey_with_flags(
+            "Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+            KEY_READ,
+        )?;
+        match run_key.get_value::<String, _>(app_name) {
+            Ok(current_value) => {
+                let expected_value = format!("\"{}\"", app_path.display());
+                Ok(current_value == expected_value)
+            }
+            Err(_) => Ok(false),
+        }
+    }
+}
+
+#[cfg(target_os = "macos")]
+pub mod autostart {
+    use std::error::Error;
+    use std::fs::{self, File};
+    use std::path::Path;
+    use dirs::home_dir;
+
+    pub fn enable(app_name: &str, app_path: &Path) -> Result<(), Box<dyn Error>> {
+        let plist_dir = home_dir()
+            .ok_or("无法获取用户目录")?
+            .join("Library")
+            .join("LaunchAgents");
+        fs::create_dir_all(&plist_dir)?;
+        let plist_path = plist_dir.join(format!("com.{}.plist", app_name));
+        let plist_content = format!(
+            r#"<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.{}</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>{}</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>"#,
+            app_name,
+            app_path.display()
+        );
+        fs::write(&plist_path, plist_content)?;
+        let _ = std::process::Command::new("launchctl")
+            .arg("load")
+            .arg("-w")
+            .arg(&plist_path)
+            .status();
+        Ok(())
+    }
+
+    pub fn disable(app_name: &str) -> Result<(), Box<dyn Error>> {
+        let plist_path = home_dir()
+            .ok_or("无法获取用户目录")?
+            .join("Library")
+            .join("LaunchAgents")
+            .join(format!("com.{}.plist", app_name));
+        let _ = std::process::Command::new("launchctl")
+            .arg("unload")
+            .arg("-w")
+            .arg(&plist_path)
+            .status();
+        if plist_path.exists() {
+            fs::remove_file(plist_path)?;
+        }
+        Ok(())
+    }
+
+    pub fn is_enabled(app_name: &str) -> Result<bool, Box<dyn Error>> {
+        let plist_path = home_dir()
+            .ok_or("无法获取用户目录")?
+            .join("Library")
+            .join("LaunchAgents")
+            .join(format!("com.{}.plist", app_name));
+        Ok(plist_path.exists())
+    }
+}
+
+#[cfg(target_os = "linux")]
+pub mod autostart {
+    use std::error::Error;
+    use std::fs::{self, File};
+    use std::io::Write;
+    use std::path::Path;
+    use xdg::BaseDirectories;
+
+    pub fn enable(app_name: &str, app_path: &Path) -> Result<(), Box<dyn Error>> {
+        let xdg_dirs = BaseDirectories::with_prefix(app_name)?;
+        let autostart_dir = xdg_dirs
+            .place_config_file("autostart")
+            .map_err(|_| "无法创建autostart目录")?;
+        let desktop_entry_path = autostart_dir.join(format!("{}.desktop", app_name));
+        let mut file = File::create(&desktop_entry_path)?;
+        writeln!(file, "[Desktop Entry]")?;
+        writeln!(file, "Type=Application")?;
+        writeln!(file, "Name={}", app_name)?;
+        writeln!(file, "Exec={}", app_path.display())?;
+        writeln!(file, "Terminal=false")?;
+        writeln!(file, "NoDisplay=false")?;
+        writeln!(file, "X-GNOME-Autostart-enabled=true")?;
+        Ok(())
+    }
+
+    pub fn disable(app_name: &str) -> Result<(), Box<dyn Error>> {
+        let xdg_dirs = BaseDirectories::with_prefix(app_name)?;
+        if let Ok(path) = xdg_dirs.place_config_file("autostart") {
+            let desktop_entry_path = path.join(format!("{}.desktop", app_name));
+            if desktop_entry_path.exists() {
+                fs::remove_file(desktop_entry_path)?;
+            }
+        }
+        Ok(())
+    }
+
+    pub fn is_enabled(app_name: &str) -> Result<bool, Box<dyn Error>> {
+        let xdg_dirs = BaseDirectories::with_prefix(app_name)?;
+        if let Ok(path) = xdg_dirs.place_config_file("autostart") {
+            let desktop_entry_path = path.join(format!("{}.desktop", app_name));
+            return Ok(desktop_entry_path.exists());
+        }
+        Ok(false)
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn enable_autostart(app_name: *const c_char) -> *mut c_char {
+    if app_name.is_null() {
+        return create_error_response("App name pointer is null");
+    }
+    let app_name_str = unsafe {
+        match CStr::from_ptr(app_name).to_str() {
+            Ok(s) => s,
+            Err(_) => return create_error_response("Invalid UTF-8 in app name"),
+        }
+    };
+    if let Ok(exe_path) = std::env::current_exe() {
+        match autostart::enable(app_name_str, &exe_path) {
+            Ok(_) => create_success_response("Autostart enabled"),
+            Err(e) => create_error_response(&format!("Failed to enable autostart: {}", e)),
+        }
+    } else {
+        create_error_response("Failed to get current executable path")
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn disable_autostart(app_name: *const c_char) -> *mut c_char {
+    if app_name.is_null() {
+        return create_error_response("App name pointer is null");
+    }
+    let app_name_str = unsafe {
+        match CStr::from_ptr(app_name).to_str() {
+            Ok(s) => s,
+            Err(_) => return create_error_response("Invalid UTF-8 in app name"),
+        }
+    };
+    match autostart::disable(app_name_str) {
+        Ok(_) => create_success_response("Autostart disabled"),
+        Err(e) => create_error_response(&format!("Failed to disable autostart: {}", e)),
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn is_autostart_enabled(app_name: *const c_char) -> *mut c_char {
+    if app_name.is_null() {
+        return create_error_response("App name pointer is null");
+    }
+    let app_name_str = unsafe {
+        match CStr::from_ptr(app_name).to_str() {
+            Ok(s) => s,
+            Err(_) => return create_error_response("Invalid UTF-8 in app name"),
+        }
+    };
+    if let Ok(exe_path) = std::env::current_exe() {
+        match autostart::is_enabled(app_name_str, &exe_path) {
+            Ok(enabled) => {
+                let response = format!("{{\"success\":true,\"data\":{}}}", enabled);
+                match CString::new(response) {
+                    Ok(c_string) => return c_string.into_raw(),
+                    Err(_) => return ptr::null_mut(),
+                }
+            }
+            Err(e) => create_error_response(&format!("Failed to check autostart status: {}", e)),
+        }
+    } else {
+        create_error_response("Failed to get current executable path")
+    }
+}
