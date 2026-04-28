@@ -67,3 +67,41 @@ fn main() {
 注意：要兼容Windows、MacOS、Linux系统
 
 
+开机自启动哪一行改为两个功能，最左侧显示 当前服务正在运行，最右侧显示 开机自启动和开关   开机自启动前面的icon不需要显示
+
+当前服务正在运行 和  开机自启动  那一行不需要卡片背景，高度变为原来的1/3
+
+红色标注部分上下间距太大了请帮我把间距改小点，Switch按钮也是有点大，请帮我改小点
+
+当前项目有一张gif图片，gif图片路径为assets\images\loading_cat.gif ，请将这个gif图展示到文本“当前服务正在运行”  前面，gif图要小一点
+
+
+当前服务正在运行  文本根据共享服务是否启动成功来展示，如果启动成功，那么展示“当前服务正在运行”  文本，文本颜色使用： #029b00，如果启动失败，那么展示“当前服务启动失败，请检查端口是否被占用”，文本颜色使用： #ff696a
+rust实现的服务代码如下：
+    // 在新线程中启动服务器
+    thread::spawn(move || {
+        let sys = actix_rt::System::new();
+        sys.block_on(async {
+            let server = HttpServer::new(move || {
+                let p = CURRENT_PATH.lock().unwrap().clone();
+                App::new()
+                    .service(actix_files::Files::new("/file", &p).show_files_listing())
+            })
+            .bind(("0.0.0.0", 9202));
+
+            match server {
+                Ok(srv) => {
+                    let s = srv.run();
+                    let handle = s.handle();
+                    {
+                        let mut global_handle = SERVER_HANDLE.lock().unwrap();
+                        *global_handle = Some(handle);
+                    }
+                    let _ = s.await;
+                }
+                Err(e) => {
+                    eprintln!("Failed to bind server: {}", e);
+                }
+            }
+        });
+    });

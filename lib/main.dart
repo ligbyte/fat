@@ -586,13 +586,23 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            '当前服务正在运行',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey.shade700,
-            ),
+          Row(
+            children: [
+              Image.asset(
+                'assets/images/loading_cat.gif',
+                width: 34,
+                height: 34,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '当前服务正在运行',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+            ],
           ),
           Row(
             children: [

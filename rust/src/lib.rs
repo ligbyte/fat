@@ -323,8 +323,6 @@ pub extern "C" fn start_static_server(path: *const c_char) -> *mut c_char {
                 let p = CURRENT_PATH.lock().unwrap().clone();
                 App::new()
                     .service(actix_files::Files::new("/file", &p).show_files_listing())
-                    .service(web::scope("").route("/health", web::get().to(health_check)))
-                    .service(web::scope("/app").route("/hello", web::get().to(index)))
             })
             .bind(("0.0.0.0", 9202));
 
