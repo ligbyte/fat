@@ -77,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Map<String, List<Map<String, dynamic>>> _folderContents = {};
   bool _isLoading = false;
   bool _autostartEnabled = false;
+  bool _serverRunning = false;
 
   @override
   void initState() {
@@ -88,8 +89,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void _loadAutostartPreference() async {
     final prefs = await SharedPreferences.getInstance();
     final autostartEnabled = prefs.getBool('autostart_enabled') ?? false;
+    final serverRunning = RustBridge.isServerRunning();
     setState(() {
       _autostartEnabled = autostartEnabled;
+      _serverRunning = serverRunning;
     });
   }
 
@@ -595,11 +598,13 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(width: 4),
               Text(
-                '当前服务正在运行',
+                _serverRunning ? '当前服务正在运行' : '当前服务启动失败，请检查端口是否被占用',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade700,
+                  color: _serverRunning
+                      ? const Color(0xFF029b00)
+                      : const Color(0xFFff696a),
                 ),
               ),
             ],

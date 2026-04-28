@@ -24,6 +24,7 @@ class RustBridge {
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _enableAutostart;
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _disableAutostart;
   static late Pointer<NativeFunction<Pointer Function(Pointer)>> _isAutostartEnabled;
+  static late Pointer<NativeFunction<Pointer Function()>> _isServerRunning;
 
   static void initialize() {
     String libraryPath = '';
@@ -54,6 +55,7 @@ class RustBridge {
     _enableAutostart = _dylib.lookup('enable_autostart');
     _disableAutostart = _dylib.lookup('disable_autostart');
     _isAutostartEnabled = _dylib.lookup('is_autostart_enabled');
+    _isServerRunning = _dylib.lookup('is_server_running');
   }
 
   static String? createFile(String path) {
@@ -226,6 +228,22 @@ class RustBridge {
       }
     } finally {
       malloc.free(appNamePtr);
+    }
+  }
+
+  static bool isServerRunning() {
+    try {
+      final resultPtr = _isServerRunning.asFunction<Pointer Function()>()();
+      final result = resultPtr.cast<Utf8>().toDartString();
+      _freeString.asFunction<void Function(Pointer)>()(resultPtr);
+      try {
+        final Map<String, dynamic> json = jsonDecode(result);
+        return json['data'] == true;
+      } catch (e) {
+        return false;
+      }
+    } catch (e) {
+      return false;
     }
   }
 }

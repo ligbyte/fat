@@ -603,3 +603,14 @@ pub extern "C" fn is_autostart_enabled(app_name: *const c_char) -> *mut c_char {
         create_error_response("Failed to get current executable path")
     }
 }
+
+#[no_mangle]
+pub extern "C" fn is_server_running() -> *mut c_char {
+    let handle = SERVER_HANDLE.lock().unwrap();
+    let running = handle.is_some();
+    let response = format!("{{\"success\":true,\"data\":{}}}", running);
+    match CString::new(response) {
+        Ok(c_string) => c_string.into_raw(),
+        Err(_) => ptr::null_mut(),
+    }
+}
