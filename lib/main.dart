@@ -6,14 +6,30 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tray_manager/tray_manager.dart';
+import 'package:window_manager/window_manager.dart';
 import 'dart:convert';
 import 'rust_bridge.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+  
   RustBridge.initialize();
+
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(1100, 750),
+    center: true,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.normal,
+  );
+  
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   runApp(const MyApp());
 }
 
@@ -101,7 +117,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TrayListener {
+class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListener {
   String _filecatPath = '';
   List<Map<String, dynamic>> _directoryContents = [];
   Map<String, bool> _expandedFolders = {};
@@ -113,15 +129,30 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener {
   @override
   void initState() {
     super.initState();
+    windowManager.addListener(this);
+    _setPreventClose();
     _initTray();
     _loadFilecatPath();
     _loadAutostartPreference();
   }
 
+  void _setPreventClose() async {
+    await windowManager.setPreventClose(true);
+  }
+
   @override
   void dispose() {
+    windowManager.removeListener(this);
     trayManager.removeListener(this);
     super.dispose();
+  }
+
+  @override
+  void onWindowClose() async {
+    bool isPreventClose = await windowManager.isPreventClose();
+    if (isPreventClose) {
+      await windowManager.hide();
+    }
   }
 
   void _initTray() async {
@@ -132,6 +163,11 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener {
     await trayManager.setToolTip('FileCat');
     final menu = Menu(
       items: [
+        MenuItem(
+          key: 'show_window',
+          label: '显示窗口',
+        ),
+        MenuItem.separator(),
         MenuItem(
           key: 'about',
           label: '关于',
@@ -148,7 +184,8 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener {
 
   @override
   void onTrayIconMouseDown() {
-    trayManager.popUpContextMenu();
+    windowManager.show();
+    windowManager.focus();
   }
 
   @override
@@ -157,8 +194,11 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener {
   }
 
   @override
-  void onTrayMenuItemClick(MenuItem menuItem) {
-    if (menuItem.key == 'about') {
+  void onTrayMenuItemClick(MenuItem menuItem) async {
+    if (menuItem.key == 'show_window') {
+      await windowManager.show();
+      await windowManager.focus();
+    } else if (menuItem.key == 'about') {
       _showAboutDialog();
     } else if (menuItem.key == 'exit') {
       exit(0);
