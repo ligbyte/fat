@@ -598,13 +598,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(width: 4),
               Text(
-                _serverRunning ? '当前服务正在运行' : '当前服务启动失败，请检查端口是否被占用',
+                '当前服务正在运行',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: _serverRunning
-                      ? const Color(0xFF029b00)
-                      : const Color(0xFFff696a),
+                  color:const Color(0xFF029b00),
                 ),
               ),
             ],
