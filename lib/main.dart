@@ -1,16 +1,46 @@
 import 'dart:math';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tray_manager/tray_manager.dart';
 import 'dart:convert';
 import 'rust_bridge.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   RustBridge.initialize();
   runApp(const MyApp());
+}
+
+void _showAboutDialog() {
+  showDialog(
+    context: navigatorKey.currentContext!,
+    builder: (context) => AlertDialog(
+      title: const Text('关于 FileCat'),
+      content: const Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('FileCat v1.0.0'),
+          SizedBox(height: 8),
+          Text('一个 Flutter + Rust 混合开发的文件管理应用'),
+          SizedBox(height: 8),
+          Text('支持系统托盘、文件浏览、局域网共享等功能'),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('确定'),
+        ),
+      ],
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -19,6 +49,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Filecat',
       builder: (context, child) => ResponsiveBreakpoints.builder(
         child: child!,
@@ -70,7 +101,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with TrayListener {
   String _filecatPath = '';
   List<Map<String, dynamic>> _directoryContents = [];
   Map<String, bool> _expandedFolders = {};
@@ -82,8 +113,56 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _initTray();
     _loadFilecatPath();
     _loadAutostartPreference();
+  }
+
+  @override
+  void dispose() {
+    trayManager.removeListener(this);
+    super.dispose();
+  }
+
+  void _initTray() async {
+    trayManager.addListener(this);
+    await trayManager.setIcon(
+      Platform.isWindows ? 'assets/images/app_icon.ico' : 'assets/images/app_icon.ico',
+    );
+    await trayManager.setToolTip('FileCat');
+    final menu = Menu(
+      items: [
+        MenuItem(
+          key: 'about',
+          label: '关于',
+        ),
+        MenuItem.separator(),
+        MenuItem(
+          key: 'exit',
+          label: '退出',
+        ),
+      ],
+    );
+    await trayManager.setContextMenu(menu);
+  }
+
+  @override
+  void onTrayIconMouseDown() {
+    trayManager.popUpContextMenu();
+  }
+
+  @override
+  void onTrayIconRightMouseDown() {
+    trayManager.popUpContextMenu();
+  }
+
+  @override
+  void onTrayMenuItemClick(MenuItem menuItem) {
+    if (menuItem.key == 'about') {
+      _showAboutDialog();
+    } else if (menuItem.key == 'exit') {
+      exit(0);
+    }
   }
 
   void _loadAutostartPreference() async {

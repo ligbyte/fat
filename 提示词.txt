@@ -79,3 +79,9 @@ fn main() {
 
 https://pub.dev/packages/launch_at_startup  这是一个Flutter的开机自启动库，请使用这个库实现开机自启动逻辑和关闭开机自启动逻辑，
 注意：要兼容Windows、MacOS、Linux系统实现
+
+
+https://pub.dev/packages/tray_manager 这是一个Flutter的添加Windows、MacOS、Linux系统托盘图标，请使用这个库实现当前应用程序的状态栏图标，状态栏有个菜单 1、关于 2、退出
+并实现 关于 和  退出  功能
+
+功能已经实现了，但是状态栏的图标没有设置，请使用当前应用程序的启动图标作为状态栏的图标
