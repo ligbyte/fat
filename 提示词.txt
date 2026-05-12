@@ -95,3 +95,11 @@ https://pub.dev/packages/tray_manager 这是一个Flutter的添加Windows、MacO
 
 
 请帮我修复这个BUG：运行程序后，文件夹下有新增内容，在软件中点开列表看不到新增加的文件，应该是文件夹下内容没有刷新导致的
+
+
+托盘栏菜单点击关于，弹出的UI太丑了，请帮我修改漂亮一些
+
+1、关于弹出的UI最上方的图标显示图片 assets\icon\app_icon.png，
+2、关于弹出的UI 最下方的好的 按钮，改为 右上角图片按钮 assets\icon\close.png  来关闭弹窗
+
+关于弹窗的整体背景颜色使用白色

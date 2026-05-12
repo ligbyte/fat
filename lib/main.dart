@@ -36,25 +36,96 @@ void main() async {
 void _showAboutDialog() {
   showDialog(
     context: navigatorKey.currentContext!,
-    builder: (context) => AlertDialog(
-      title: const Text('关于 FileCat'),
-      content: const Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('FileCat v1.0.0'),
-          SizedBox(height: 8),
-          Text('一个 Flutter + Rust 混合开发的文件管理应用'),
-          SizedBox(height: 8),
-          Text('支持系统托盘、文件浏览、局域网共享等功能'),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('确定'),
+    builder: (context) => Dialog(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Container(
+        width: 360,
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Image.asset(
+                  'assets/icon/close.png',
+                  width: 28,
+                  height: 28,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF5B8DEF).withOpacity(0.15),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Image.asset(
+                'assets/icon/app_icon.png',
+                width: 80,
+                height: 80,
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'FileCat',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF1E293B),
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFF5B8DEF).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text(
+                'v1.0.0',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF5B8DEF),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              '一个 Flutter + Rust 混合开发的\n文件管理应用',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Color(0xFF64748B),
+                height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              '支持系统托盘 · 文件浏览 · 局域网共享',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                color: Color(0xFF94A3B8),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     ),
   );
 }
