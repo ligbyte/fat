@@ -152,20 +152,25 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
     bool isPreventClose = await windowManager.isPreventClose();
     if (isPreventClose) {
       await windowManager.hide();
+      _updateTrayMenu(forceVisible: false);
     }
   }
 
-  void _initTray() async {
-    trayManager.addListener(this);
-    await trayManager.setIcon(
-      Platform.isWindows ? 'assets/images/app_icon.ico' : 'assets/images/app_icon.ico',
-    );
-    await trayManager.setToolTip('FileCat');
+  void onWindowHide() {
+    _updateTrayMenu(forceVisible: false);
+  }
+
+  void onWindowShow() {
+    _updateTrayMenu(forceVisible: true);
+  }
+
+  Future<void> _updateTrayMenu({bool? forceVisible}) async {
+    bool isVisible = forceVisible ?? await windowManager.isVisible();
     final menu = Menu(
       items: [
         MenuItem(
-          key: 'show_window',
-          label: '显示窗口',
+          key: 'toggle_window',
+          label: isVisible ? '隐藏窗口' : '显示窗口',
         ),
         MenuItem.separator(),
         MenuItem(
@@ -182,22 +187,47 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
     await trayManager.setContextMenu(menu);
   }
 
+  void _initTray() async {
+    trayManager.addListener(this);
+    await trayManager.setIcon(
+      Platform.isWindows ? 'assets/images/app_icon.ico' : 'assets/images/app_icon.ico',
+    );
+    await trayManager.setToolTip('FileCat');
+    _updateTrayMenu(forceVisible: true);
+  }
+
   @override
-  void onTrayIconMouseDown() {
-    windowManager.show();
-    windowManager.focus();
+  void onTrayIconMouseDown() async {
+    bool isVisible = await windowManager.isVisible();
+    if (isVisible) {
+      await windowManager.hide();
+      _updateTrayMenu(forceVisible: false);
+    } else {
+      await windowManager.show();
+      await windowManager.focus();
+      _updateTrayMenu(forceVisible: true);
+    }
   }
 
   @override
   void onTrayIconRightMouseDown() {
-    trayManager.popUpContextMenu();
+    _updateTrayMenu().then((_) {
+      trayManager.popUpContextMenu();
+    });
   }
 
   @override
   void onTrayMenuItemClick(MenuItem menuItem) async {
-    if (menuItem.key == 'show_window') {
-      await windowManager.show();
-      await windowManager.focus();
+    if (menuItem.key == 'toggle_window') {
+      bool isVisible = await windowManager.isVisible();
+      if (isVisible) {
+        await windowManager.hide();
+        _updateTrayMenu(forceVisible: false);
+      } else {
+        await windowManager.show();
+        await windowManager.focus();
+        _updateTrayMenu(forceVisible: true);
+      }
     } else if (menuItem.key == 'about') {
       _showAboutDialog();
     } else if (menuItem.key == 'exit') {

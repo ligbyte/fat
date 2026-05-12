@@ -6,7 +6,7 @@ File + Cat = Fat
 
 ```shell
 
-cd rust; cargo build --release
+cd rust; cargo clean;cargo build
 
 
 flutter run -d windows
@@ -55,19 +55,19 @@ dart migrate --apply-changes
 # 打包命令
 
 ```shell
-先执行： cd rust; cargo build --release
+先执行： cd rust; cargo clean;cargo build --release
 
-flutter build apk
-flutter build appbundle
+flutter build apk --release
+flutter build appbundle --release
 
-flutter build ipa
+flutter build ipa --release
 flutter build ios --release
 
-flutter build web
+flutter build web --release
 
-flutter build windows
-flutter build macos
-flutter build linux
+flutter build windows --release
+flutter build macos --release
+flutter build linux --release
 
 ```
 
