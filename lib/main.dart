@@ -578,17 +578,22 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF5B8DEF), Color(0xFF8B5CF6)],
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.folder_open_rounded,
                 color: Colors.white,
-                size: 20,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF5B8DEF).withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Image.asset(
+                'assets/icon/app_icon.png',
+                width: 28,
+                height: 28,
               ),
             ),
             const SizedBox(width: 12),
