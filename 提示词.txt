@@ -103,3 +103,9 @@ https://pub.dev/packages/tray_manager 这是一个Flutter的添加Windows、MacO
 2、关于弹出的UI 最下方的好的 按钮，改为 右上角图片按钮 assets\icon\close.png  来关闭弹窗
 
 关于弹窗的整体背景颜色使用白色
+
+关于弹窗的圆角要小一点
+
+请帮我实现：托盘栏菜单关于上方添加一个新的菜单：支持作者，  点击支持作者弹出弹窗类似关于的弹窗，展示图片 assets\images\wechat_pay.jpg  
+图片下方显示： 支持一下作者吧~~~
+

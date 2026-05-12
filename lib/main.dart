@@ -130,6 +130,76 @@ void _showAboutDialog() {
   );
 }
 
+void _showSupportDialog() {
+  showDialog(
+    context: navigatorKey.currentContext!,
+    builder: (context) => Dialog(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        width: 360,
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Image.asset(
+                  'assets/icon/close.png',
+                  width: 28,
+                  height: 28,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Image.asset(
+                'assets/images/wechat_pay.jpg',
+                width: 240,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              '支持一下作者吧~~~',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF1E293B),
+                letterSpacing: 0.3,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              '您的支持是我持续更新的最大动力',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Color(0xFF64748B),
+                height: 1.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -245,6 +315,11 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
         ),
         MenuItem.separator(),
         MenuItem(
+          key: 'support',
+          label: '支持作者',
+        ),
+        MenuItem.separator(),
+        MenuItem(
           key: 'about',
           label: '关于',
         ),
@@ -299,6 +374,8 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
         await windowManager.focus();
         _updateTrayMenu(forceVisible: true);
       }
+    } else if (menuItem.key == 'support') {
+      _showSupportDialog();
     } else if (menuItem.key == 'about') {
       _showAboutDialog();
     } else if (menuItem.key == 'exit') {
