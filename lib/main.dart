@@ -334,9 +334,28 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
         _expandedFolders[path] = true;
       });
       
-      if (!_folderContents.containsKey(path)) {
-        _loadFolderContents(path);
+      // 每次展开都重新加载内容，确保数据是最新的
+      _loadFolderContents(path);
+    }
+  }
+
+  void _refreshContents() {
+    if (_filecatPath.isNotEmpty) {
+      _loadDirectoryContents(_filecatPath);
+      // 同时刷新所有已展开的子文件夹
+      for (var entry in _expandedFolders.entries) {
+        if (entry.value) {
+          _loadFolderContents(entry.key);
+        }
       }
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('已刷新目录内容'),
+          duration: Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
@@ -635,16 +654,25 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
         children: [
           Row(
             children: [
-          const Text(
-            '目录内容',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF1E293B),
-              letterSpacing: 0.3,
-            ),
-          ),
-          const Spacer(),
+              const Text(
+                '目录内容',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1E293B),
+                  letterSpacing: 0.3,
+                ),
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                onPressed: _refreshContents,
+                icon: const Icon(Icons.refresh_rounded, size: 20),
+                tooltip: '刷新目录',
+                color: const Color(0xFF5B8DEF),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+              const Spacer(),
               if (_isLoading)
                 const SizedBox(
                   width: 20,
