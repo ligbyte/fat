@@ -109,3 +109,6 @@ https://pub.dev/packages/tray_manager 这是一个Flutter的添加Windows、MacO
 请帮我实现：托盘栏菜单关于上方添加一个新的菜单：支持作者，  点击支持作者弹出弹窗类似关于的弹窗，展示图片 assets\images\wechat_pay.jpg  
 图片下方显示： 支持一下作者吧~~~
 
+托盘栏菜单关于和支持作者 上下之间要有分割线
+
+FileCat 文本前方的图片使用 assets\icon\app_icon.png
