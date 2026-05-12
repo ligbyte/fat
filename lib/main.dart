@@ -39,7 +39,7 @@ void _showAboutDialog() {
     builder: (context) => Dialog(
       backgroundColor: Colors.white,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         width: 360,
         padding: const EdgeInsets.all(32),
@@ -62,7 +62,7 @@ void _showAboutDialog() {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
                     color: const Color(0xFF5B8DEF).withOpacity(0.15),
