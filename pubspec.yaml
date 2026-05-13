@@ -44,6 +44,7 @@ dependencies:
   tray_manager: ^0.2.3
   window_manager: ^0.3.7
   google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -70,6 +71,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icon/
+    - assets/helium_icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

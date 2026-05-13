@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
 import 'rust_bridge.dart';
 
@@ -914,6 +915,194 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
     final size = item['size'] as int;
     final isExpanded = _expandedFolders[path] == true;
 
+    // 根据文件/文件夹名称获取对应的 Helium 图标
+    String getHeliumIcon() {
+      if (isDir) {
+        final folderName = name.toLowerCase();
+        // 常见的文件夹映射
+        const folderMap = {
+          'src': 'folder-src',
+          'source': 'folder-src',
+          'sources': 'folder-src',
+          'dist': 'folder-dist',
+          'out': 'folder-dist',
+          'build': 'folder-dist',
+          'release': 'folder-dist',
+          'bin': 'folder-dist',
+          'css': 'folder-css',
+          'styles': 'folder-css',
+          'style': 'folder-css',
+          'sass': 'folder-sass',
+          'scss': 'folder-sass',
+          'images': 'folder-images',
+          'image': 'folder-images',
+          'img': 'folder-images',
+          'icons': 'folder-images',
+          'icon': 'folder-images',
+          'scripts': 'folder-scripts',
+          'script': 'folder-scripts',
+          'node_modules': 'folder-node',
+          'js': 'folder-javascript',
+          'javascript': 'folder-javascript',
+          'font': 'folder-font',
+          'fonts': 'folder-font',
+          'test': 'folder-test',
+          'tests': 'folder-test',
+          'spec': 'folder-test',
+          'specs': 'folder-test',
+          'doc': 'folder-docs',
+          'docs': 'folder-docs',
+          'documents': 'folder-docs',
+          '.git': 'folder-git',
+          '.github': 'folder-github',
+          '.vscode': 'folder-vscode',
+          'views': 'folder-views',
+          'pages': 'folder-views',
+          'components': 'folder-components',
+          'assets': 'folder-resource',
+          'res': 'folder-resource',
+          'resource': 'folder-resource',
+          'resources': 'folder-resource',
+          'lib': 'folder-lib',
+          'libs': 'folder-lib',
+          'vendor': 'folder-lib',
+          'themes': 'folder-theme',
+          'theme': 'folder-theme',
+          'public': 'folder-public',
+          'www': 'folder-public',
+          'include': 'folder-include',
+          'docker': 'folder-docker',
+          'db': 'folder-database',
+          'database': 'folder-database',
+          'sql': 'folder-database',
+          'log': 'folder-log',
+          'logs': 'folder-log',
+          'temp': 'folder-temp',
+          'tmp': 'folder-temp',
+          'cache': 'folder-temp',
+          'video': 'folder-video',
+          'videos': 'folder-video',
+          'audio': 'folder-audio',
+          'music': 'folder-audio',
+          'api': 'folder-api',
+          'app': 'folder-app',
+          'config': 'folder-config',
+          'settings': 'folder-config',
+          'tools': 'folder-tools',
+          'helper': 'folder-helper',
+          'helpers': 'folder-helper',
+        };
+        
+        String iconName = folderMap[folderName] ?? 'folder';
+        if (isExpanded && iconName != 'folder') {
+          return 'assets/helium_icons/$iconName-open.svg';
+        }
+        return 'assets/helium_icons/$iconName.svg';
+      } else {
+        final ext = name.split('.').last.toLowerCase();
+        final fileName = name.toLowerCase();
+        
+        // 精确文件名匹配
+        const fileNameMap = {
+          'package.json': 'nodejs',
+          'package-lock.json': 'nodejs',
+          'tsconfig.json': 'json',
+          'dockerfile': 'docker',
+          'docker-compose.yml': 'docker',
+          'docker-compose.yaml': 'docker',
+          'gitignored': 'git',
+          '.gitignore': 'git',
+          '.gitattributes': 'git',
+          'readme.md': 'readme',
+          'license': 'certificate',
+          'license.md': 'certificate',
+          'license.txt': 'certificate',
+          'makefile': 'makefile',
+        };
+        
+        if (fileNameMap.containsKey(fileName)) {
+          return 'assets/helium_icons/${fileNameMap[fileName]}.svg';
+        }
+
+        // 扩展名匹配
+        const extMap = {
+          'html': 'html',
+          'htm': 'html',
+          'css': 'css',
+          'scss': 'sass',
+          'sass': 'sass',
+          'less': 'less',
+          'js': 'javascript',
+          'mjs': 'javascript',
+          'ts': 'typescript',
+          'tsx': 'react_ts',
+          'jsx': 'react',
+          'json': 'json',
+          'yaml': 'yaml',
+          'yml': 'yaml',
+          'xml': 'xml',
+          'md': 'markdown',
+          'markdown': 'markdown',
+          'py': 'python',
+          'pyc': 'python-misc',
+          'whl': 'python-misc',
+          'java': 'java',
+          'jar': 'java',
+          'c': 'c',
+          'cpp': 'cpp',
+          'cc': 'cpp',
+          'h': 'h',
+          'hpp': 'hpp',
+          'go': 'go',
+          'rb': 'ruby',
+          'rs': 'rust',
+          'swift': 'swift',
+          'dart': 'dart',
+          'php': 'php',
+          'sql': 'database',
+          'sh': 'console',
+          'bash': 'console',
+          'bat': 'console',
+          'cmd': 'console',
+          'ps1': 'powershell',
+          'pdf': 'pdf',
+          'png': 'image',
+          'jpg': 'image',
+          'jpeg': 'image',
+          'gif': 'image',
+          'svg': 'svg',
+          'ico': 'image',
+          'webp': 'image',
+          'zip': 'zip',
+          'tar': 'zip',
+          'gz': 'zip',
+          '7z': 'zip',
+          'rar': 'zip',
+          'mp3': 'audio',
+          'wav': 'audio',
+          'mp4': 'video',
+          'mov': 'video',
+          'avi': 'video',
+          'exe': 'exe',
+          'msi': 'exe',
+          'doc': 'word',
+          'docx': 'word',
+          'xls': 'table',
+          'xlsx': 'table',
+          'csv': 'table',
+          'ppt': 'powerpoint',
+          'pptx': 'powerpoint',
+          'ini': 'settings',
+          'conf': 'settings',
+          'config': 'settings',
+          'toml': 'settings',
+        };
+        
+        String iconName = extMap[ext] ?? 'file';
+        return 'assets/helium_icons/$iconName.svg';
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -925,12 +1114,17 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
             bottom: 4,
           ),
           hoverColor: const Color(0xFFF5F5F5),
-          leading: Icon(
-            isDir 
-                ? (isExpanded ? Icons.folder_open_outlined : Icons.folder_outlined)
-                : Icons.article_outlined,
-            color: isDir ? const Color(0xFF2F54EB) : const Color(0xFF8C8C8C),
-            size: 20,
+          leading: SvgPicture.asset(
+            getHeliumIcon(),
+            width: 20,
+            height: 20,
+            placeholderBuilder: (context) => Icon(
+              isDir 
+                  ? (isExpanded ? Icons.folder_open_outlined : Icons.folder_outlined)
+                  : Icons.article_outlined,
+              color: isDir ? const Color(0xFF2F54EB) : const Color(0xFF8C8C8C),
+              size: 20,
+            ),
           ),
           title: Text(
             name,
