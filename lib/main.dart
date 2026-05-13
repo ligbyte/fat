@@ -804,7 +804,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('已复制: $fullUrl'),
+        content: Text('已复制: $fullUrl',style: const TextStyle(fontSize: 13,color: Colors.white),),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
