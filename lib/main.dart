@@ -827,15 +827,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
                 width: 28,
                 height: 28,
               ),
-              const SizedBox(width: 8),
-              Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF52C41A),
-                  shape: BoxShape.circle,
-                ),
-              ),
+
               const SizedBox(width: 8),
               const Text(
                 '服务运行中',
@@ -856,7 +848,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
                   color: Color(0xFF000000),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
               SizedBox(
                 height: 24,
                 child: Transform.scale(
