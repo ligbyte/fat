@@ -125,4 +125,15 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 
 修改当前项目，字体统一使用 开源免费的 Noto Sans SC（思源黑体）
 
-文件夹名字列表和文件名字列表   字体统一使用  #21252b
+文件夹名字列表和文件名字列表   字体颜色统一使用  #000000
+
+开机自启动 文字颜色统一使用  #000000
+
+
+请阅读这个开源项目：C:\Users\dev\Downloads\vscode-helium-icon-theme-master ，
+项目中有很多文件夹图标和文件图标，请将这些图标拷贝到当前项目中，根据文件的类型或者文件夹的类型显示相对应的文件图标或者文件夹图标
+
+
+如果是 .apk 文件，请使用图标 assets\helium_icons\android.svg
+
+默认文件夹的显示是： 未打开文件夹 使用图标 folder-resource.svg ，打开的文件夹使用图标 folder-resource-open.svg

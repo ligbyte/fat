@@ -993,8 +993,8 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
           'helpers': 'folder-helper',
         };
         
-        String iconName = folderMap[folderName] ?? 'folder';
-        if (isExpanded && iconName != 'folder') {
+        String iconName = folderMap[folderName] ?? 'folder-resource';
+        if (isExpanded) {
           return 'assets/helium_icons/$iconName-open.svg';
         }
         return 'assets/helium_icons/$iconName.svg';
@@ -1085,6 +1085,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
           'avi': 'video',
           'exe': 'exe',
           'msi': 'exe',
+          'apk': 'android',
           'doc': 'word',
           'docx': 'word',
           'xls': 'table',
