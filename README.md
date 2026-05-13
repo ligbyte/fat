@@ -91,3 +91,7 @@ Statistic (5.0)
 Dart (242.24931)
 com.alibabacloud.intellij.cosy (2.10.1)
 io.flutter (85.2.2)
+
+
+按下 Win + R键打开“运行”对话框。
+输入 firewall.cpl并按回车键，这将直接打开 Windows Defender 防火墙主界面。
