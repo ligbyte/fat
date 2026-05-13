@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'rust_bridge.dart';
 
@@ -228,6 +229,13 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFF5F7FA),
+        textTheme: GoogleFonts.notoSansScTextTheme(const TextTheme(
+          titleLarge: TextStyle(color: Color(0xFF000000), fontWeight: FontWeight.w600),
+          titleMedium: TextStyle(color: Color(0xFF000000), fontWeight: FontWeight.w500),
+          bodyLarge: TextStyle(color: Color(0xFF000000)),
+          bodyMedium: TextStyle(color: Color(0xFF595959)),
+        )),
+        primaryTextTheme: GoogleFonts.notoSansScTextTheme(),
         cardTheme: CardThemeData(
           elevation: 0,
           color: Colors.white,
@@ -241,15 +249,9 @@ class MyApp extends StatelessWidget {
           elevation: 0,
           centerTitle: false,
           backgroundColor: Colors.white,
-          foregroundColor: Color(0xFF262626),
+          foregroundColor: Color(0xFF000000),
           iconTheme: IconThemeData(color: Color(0xFF2F54EB)),
           shape: Border(bottom: BorderSide(color: Color(0xFFD9D9D9), width: 1)),
-        ),
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(color: Color(0xFF262626), fontWeight: FontWeight.w600),
-          titleMedium: TextStyle(color: Color(0xFF262626), fontWeight: FontWeight.w500),
-          bodyLarge: TextStyle(color: Color(0xFF262626)),
-          bodyMedium: TextStyle(color: Color(0xFF595959)),
         ),
       ),
       home: const MyHomePage(),
@@ -661,7 +663,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
             ),
           ),
           const SizedBox(width: 16),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [const Text('共享文件夹路径', style: TextStyle(fontSize: 12, color: Color(0xFF8C8C8C))), const SizedBox(height: 2), Text(_filecatPath.isEmpty ? '加载中...' : _filecatPath, style: const TextStyle(fontSize: 14, color: Color(0xFF262626), fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis)] )),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [const Text('共享文件夹路径', style: TextStyle(fontSize: 12, color: Color(0xFF8C8C8C))), const SizedBox(height: 2), Text(_filecatPath.isEmpty ? '加载中...' : _filecatPath, style: const TextStyle(fontSize: 14, color: Color(0xFF000000), fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis)] )),
           const SizedBox(width: 16),
           Material(
             color: Colors.white,
@@ -710,7 +712,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF262626),
+                    color: Color(0xFF000000),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -850,7 +852,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
                 '开机自启动',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Color(0xFF8C8C8C),
+                  color: Color(0xFF000000),
                 ),
               ),
               const SizedBox(width: 8),
@@ -935,7 +937,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w400,
-              color: Color(0xFF262626),
+              color: Color(0xFF000000),
             ),
           ),
           subtitle: isDir 

@@ -124,3 +124,5 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 
 
 修改当前项目，字体统一使用 开源免费的 Noto Sans SC（思源黑体）
+
+文件夹名字列表和文件名字列表   字体统一使用  #21252b
