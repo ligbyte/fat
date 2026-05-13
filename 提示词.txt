@@ -112,3 +112,15 @@ https://pub.dev/packages/tray_manager 这是一个Flutter的添加Windows、MacO
 托盘栏菜单关于和支持作者 上下之间要有分割线
 
 FileCat 文本前方的图片使用 assets\icon\app_icon.png
+
+
+
+这是getx框架源码和文档地址：https://github.com/jonataslaw/getx，请学习这个项目，
+请仔细阅读getx框架源码和文档，主要是页面路由、状态管理的使用，并使用getx框架重构当前项目，要确保不改变当前项目的功能逻辑
+
+
+
+这是其他项目的设计图，请参考这个设计图的风格 对当前应用UI进行美化修改，图标有点太丑了，图标也进行修改，功能确保不要有变动
+
+
+修改当前项目，字体统一使用 开源免费的 Noto Sans SC（思源黑体）
