@@ -219,29 +219,37 @@ class MyApp extends StatelessWidget {
       ),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF5B8DEF),
+          seedColor: const Color(0xFF2F54EB),
           brightness: Brightness.light,
         ).copyWith(
-          primary: const Color(0xFF5B8DEF),
-          secondary: const Color(0xFF8B5CF6),
+          primary: const Color(0xFF2F54EB),
+          secondary: const Color(0xFF13C2C2),
           surface: Colors.white,
         ),
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
+        scaffoldBackgroundColor: const Color(0xFFF5F7FA),
         cardTheme: CardThemeData(
           elevation: 0,
-          shadowColor: const Color(0xFF5B8DEF).withOpacity(0.08),
+          color: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(4),
+            side: const BorderSide(color: Color(0xFFD9D9D9), width: 1),
           ),
-          margin: const EdgeInsets.only(bottom: 20),
+          margin: const EdgeInsets.only(bottom: 16),
         ),
         appBarTheme: const AppBarTheme(
           elevation: 0,
-          centerTitle: true,
+          centerTitle: false,
           backgroundColor: Colors.white,
-          foregroundColor: Color(0xFF1E293B),
-          iconTheme: IconThemeData(color: Color(0xFF5B8DEF)),
+          foregroundColor: Color(0xFF262626),
+          iconTheme: IconThemeData(color: Color(0xFF2F54EB)),
+          shape: Border(bottom: BorderSide(color: Color(0xFFD9D9D9), width: 1)),
+        ),
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(color: Color(0xFF262626), fontWeight: FontWeight.w600),
+          titleMedium: TextStyle(color: Color(0xFF262626), fontWeight: FontWeight.w500),
+          bodyLarge: TextStyle(color: Color(0xFF262626)),
+          bodyMedium: TextStyle(color: Color(0xFF595959)),
         ),
       ),
       home: const MyHomePage(),
@@ -572,16 +580,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFF8FAFC),
-              Color(0xFFEEF2F7),
-            ],
-          ),
-        ),
+        color: const Color(0xFFF5F7FA),
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -620,7 +619,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildFolderCard(),
+                        _buildPathSelection(),
                         const SizedBox(height: 12),
                         Expanded(
                           child: _buildDirectoryContents(),
@@ -639,101 +638,50 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
     );
   }
 
-  Widget _buildFolderCard() {
+  Widget _buildPathSelection() {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFFFFFFF),
-            Color(0xFFF8FAFC),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF5B8DEF).withOpacity(0.06),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: const Color(0xFFD9D9D9), width: 1),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF5B8DEF), Color(0xFF8B5CF6)],
-              ),
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF5B8DEF).withOpacity(0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              color: const Color(0xFF2F54EB).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: const Icon(
               Icons.folder_open_rounded,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  '共享文件夹路径',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF64748B),
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  _filecatPath.isEmpty ? '加载中...' : _filecatPath,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF1E293B),
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.2,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+              color: Color(0xFF2F54EB),
+              size: 20,
             ),
           ),
           const SizedBox(width: 16),
-          OutlinedButton(
-            onPressed: _changeFilecatPath,
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              side: BorderSide(
-                color: Colors.grey.shade400,
-                width: 1,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              backgroundColor: Colors.grey.shade100,
-            ),
-            child: Text(
-              '更改路径',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: Colors.grey.shade600,
-                letterSpacing: 0.3,
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [const Text('共享文件夹路径', style: TextStyle(fontSize: 12, color: Color(0xFF8C8C8C))), const SizedBox(height: 2), Text(_filecatPath.isEmpty ? '加载中...' : _filecatPath, style: const TextStyle(fontSize: 14, color: Color(0xFF262626), fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis)] )),
+          const SizedBox(width: 16),
+          Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: _changeFilecatPath,
+              borderRadius: BorderRadius.circular(4),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFFD9D9D9)),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Text(
+                  '更改路径',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF595959),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
               ),
             ),
           ),
@@ -744,59 +692,47 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
 
   Widget _buildDirectoryContents() {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFFFFFFF),
-            Color(0xFFF8FAFC),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF5B8DEF).withOpacity(0.06),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: const Color(0xFFD9D9D9), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const Text(
-                '目录内容',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF1E293B),
-                  letterSpacing: 0.3,
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                const Text(
+                  '目录内容',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF262626),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              IconButton(
-                onPressed: _refreshContents,
-                icon: const Icon(Icons.refresh_rounded, size: 20),
-                tooltip: '刷新目录',
-                color: const Color(0xFF5B8DEF),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-              ),
-              const Spacer(),
-              if (_isLoading)
-                const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                const SizedBox(width: 8),
+                IconButton(
+                  onPressed: _refreshContents,
+                  icon: const Icon(Icons.refresh_rounded, size: 18),
+                  tooltip: '刷新目录',
+                  color: const Color(0xFF2F54EB),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                 ),
-            ],
+                const Spacer(),
+                if (_isLoading)
+                  const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
+          const Divider(height: 1, color: Color(0xFFF0F0F0)),
           Expanded(
             child: _directoryContents.isEmpty && !_isLoading
                 ? Center(
@@ -805,23 +741,23 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
                       children: [
                         Icon(
                           Icons.folder_open_outlined,
-                          size: 56,
-                          color: Colors.grey.shade400,
+                          size: 48,
+                          color: Colors.grey.shade300,
                         ),
                         const SizedBox(height: 12),
                         Text(
                           '文件夹为空',
                           style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.grey.shade600,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: Colors.grey.shade400,
                           ),
                         ),
                       ],
                     ),
                   )
-                : ListView.builder(
+                : ListView.separated(
                     itemCount: _directoryContents.length,
+                    separatorBuilder: (context, index) => const Divider(height: 1, color: Color(0xFFF0F0F0)),
                     itemBuilder: (context, index) {
                       final item = _directoryContents[index];
                       return _buildDirectoryItem(item, 0);
@@ -877,7 +813,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
 
   Widget _buildAutostartCheckbox() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -885,70 +821,81 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
             children: [
               Image.asset(
                 'assets/images/loading_cat.gif',
-                width: 34,
-                height: 34,
+                width: 28,
+                height: 28,
               ),
-              const SizedBox(width: 4),
-              Text(
-                '当前服务正在运行',
+              const SizedBox(width: 8),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF52C41A),
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                '服务运行中',
                 style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color:const Color(0xFF029b00),
+                  fontSize: 13,
+                  color: Color(0xFF52C41A),
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ],
           ),
           Row(
             children: [
-              Text(
+              const Text(
                 '开机自启动',
                 style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey.shade700,
+                  fontSize: 13,
+                  color: Color(0xFF8C8C8C),
                 ),
               ),
-              const SizedBox(width: 4),
-              Transform.scale(
-                scale: 0.75,
-                child: Switch(
-                  value: _autostartEnabled,
-                  onChanged: (value) async {
-                    final prefs = await SharedPreferences.getInstance();
-                    if (value) {
-                      final result = RustBridge.enableAutostart('FileCat');
-                      if (result != null) {
-                        try {
-                          final json = jsonDecode(result);
-                          if (json['success'] == true) {
-                            await prefs.setBool('autostart_enabled', true);
-                            setState(() {
-                              _autostartEnabled = true;
-                            });
+              const SizedBox(width: 8),
+              SizedBox(
+                height: 24,
+                child: Transform.scale(
+                  scale: 0.7,
+                  child: Switch(
+                    value: _autostartEnabled,
+                    onChanged: (value) async {
+                      final prefs = await SharedPreferences.getInstance();
+                      if (value) {
+                        final result = RustBridge.enableAutostart('FileCat');
+                        if (result != null) {
+                          try {
+                            final json = jsonDecode(result);
+                            if (json['success'] == true) {
+                              await prefs.setBool('autostart_enabled', true);
+                              setState(() {
+                                _autostartEnabled = true;
+                              });
+                            }
+                          } catch (e) {
+                            debugPrint('Error enabling autostart: $e');
                           }
-                        } catch (e) {
-                          debugPrint('Error enabling autostart: $e');
+                        }
+                      } else {
+                        final result = RustBridge.disableAutostart('FileCat');
+                        if (result != null) {
+                          try {
+                            final json = jsonDecode(result);
+                            if (json['success'] == true) {
+                              await prefs.setBool('autostart_enabled', false);
+                              setState(() {
+                                _autostartEnabled = false;
+                              });
+                            }
+                          } catch (e) {
+                            debugPrint('Error disabling autostart: $e');
+                          }
                         }
                       }
-                    } else {
-                      final result = RustBridge.disableAutostart('FileCat');
-                      if (result != null) {
-                        try {
-                          final json = jsonDecode(result);
-                          if (json['success'] == true) {
-                            await prefs.setBool('autostart_enabled', false);
-                            setState(() {
-                              _autostartEnabled = false;
-                            });
-                          }
-                        } catch (e) {
-                          debugPrint('Error disabling autostart: $e');
-                        }
-                      }
-                    }
-                  },
-                  activeColor: const Color(0xFF5B8DEF),
+                    },
+                    activeColor: const Color(0xFF2F54EB),
+                  ),
                 ),
               ),
             ],
@@ -972,44 +919,39 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
           contentPadding: EdgeInsets.only(
             left: 16 + (indentLevel * 24),
             right: 16,
+            top: 4,
+            bottom: 4,
           ),
-          leading: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: isDir 
-                  ? const Color(0xFF5B8DEF).withOpacity(0.1)
-                  : Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              isDir 
-                  ? (isExpanded ? Icons.folder_open_rounded : Icons.folder_rounded)
-                  : Icons.insert_drive_file_rounded,
-              color: isDir ? const Color(0xFF5B8DEF) : Colors.grey.shade600,
-              size: 24,
-            ),
+          hoverColor: const Color(0xFFF5F5F5),
+          leading: Icon(
+            isDir 
+                ? (isExpanded ? Icons.folder_open_outlined : Icons.folder_outlined)
+                : Icons.article_outlined,
+            color: isDir ? const Color(0xFF2F54EB) : const Color(0xFF8C8C8C),
+            size: 20,
           ),
           title: Text(
             name,
             style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF1E293B),
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFF262626),
             ),
           ),
           subtitle: isDir 
               ? null 
               : Text(
-                  '${_formatFileSize(size)}  ${_formatDateTime(item['modified'] as int? ?? 0)}',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade600,
+                  '${_formatFileSize(size)}  ·  ${_formatDateTime(item['modified'] as int? ?? 0)}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF8C8C8C),
                   ),
                 ),
           trailing: isDir
               ? Icon(
                   isExpanded ? Icons.expand_more : Icons.chevron_right,
-                  color: Colors.grey.shade600,
+                  color: const Color(0xFFBFBFBF),
+                  size: 20,
                 )
               : Row(
                   mainAxisSize: MainAxisSize.min,
@@ -1050,17 +992,17 @@ class _CopyButtonState extends State<CopyButton> {
       },
       onTapCancel: () => setState(() => _isPressed = false),
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: _isPressed 
-              ? const Color(0xFF5B8DEF).withOpacity(0.1) 
+              ? const Color(0xFF2F54EB).withOpacity(0.05) 
               : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Icon(
-          Icons.copy_rounded,
-          color: _isPressed ? const Color(0xFF5B8DEF) : Colors.grey.shade600,
-          size: 20,
+          Icons.content_copy_outlined,
+          color: _isPressed ? const Color(0xFF2F54EB) : const Color(0xFF8C8C8C),
+          size: 16,
         ),
       ),
     );
