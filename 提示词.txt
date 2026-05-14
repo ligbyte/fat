@@ -1,4 +1,5 @@
 请仔细阅读当前项目，当前项目是一个Flutter和Rust混合项目，Flutter负责UI展示，Rust负责逻辑的实现，目前项目是可以运行的，你可以在终端中使用命令：flutter run -d windows   来运行当前项目   
+请记住任何时候都不要修改我目前文件的编码格式
 
 请帮我删除 计数相关的UI和逻辑
 
@@ -162,3 +163,6 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 
 这是托盘图标和菜单库的文档：https://pub.dev/packages/tray_manager， 这是源码：https://github.com/leanflutter/tray_manager，请仔细阅读文档，
 当前fat项目切换语言使用的是弹窗形式，请帮我把切换语言改到 托盘菜单的二级菜单中实现
+
+
+点击 托盘图标  弹出的以及菜单和二级菜单宽度改小点，文字居左对齐

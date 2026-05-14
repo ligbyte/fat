@@ -111,9 +111,16 @@ class HomeController extends GetxController with TrayListener, WindowListener {
           label: isVisible ? 'hide_window'.tr : 'show_window'.tr,
         ),
         MenuItem.separator(),
-        MenuItem(
+        MenuItem.submenu(
           key: 'switch_lang',
           label: 'switch_lang'.tr,
+          submenu: Menu(
+            items: [
+              _buildLanguageMenuItem('zh_CN', 'lang_chinese'.tr),
+              _buildLanguageMenuItem('en_US', 'lang_english'.tr),
+              _buildLanguageMenuItem('system', 'lang_system'.tr),
+            ],
+          ),
         ),
         MenuItem.separator(),
         MenuItem(
@@ -133,6 +140,14 @@ class HomeController extends GetxController with TrayListener, WindowListener {
       ],
     );
     await trayManager.setContextMenu(menu);
+  }
+
+  MenuItem _buildLanguageMenuItem(String code, String label) {
+    return MenuItem.checkbox(
+      key: 'language_$code',
+      label: label,
+      checked: currentLanguage.value == code,
+    );
   }
 
   void _initTray() async {
@@ -180,8 +195,9 @@ class HomeController extends GetxController with TrayListener, WindowListener {
       showSupportDialog();
     } else if (menuItem.key == 'about') {
       showAboutDialog();
-    } else if (menuItem.key == 'switch_lang') {
-      showLanguageDialog();
+    } else if (menuItem.key?.startsWith('language_') == true) {
+      final langCode = menuItem.key!.replaceFirst('language_', '');
+      switchLanguage(langCode);
     } else if (menuItem.key == 'exit') {
       exit(0);
     }
