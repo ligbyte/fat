@@ -80,17 +80,11 @@ class HomePage extends GetView<HomeController> {
       decoration: AppStyles.cardDecoration,
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: const Icon(
-              Icons.folder_open_rounded,
-              color: AppColors.primary,
-              size: 20,
-            ),
+          Image.asset(
+            'assets/images/ic_floder_share.png',
+            width: 40,
+            height: 40,
+            fit: BoxFit.contain,
           ),
           const SizedBox(width: 16),
           Expanded(

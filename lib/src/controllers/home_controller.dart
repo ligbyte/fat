@@ -628,6 +628,6 @@ class HomeController extends GetxController with TrayListener, WindowListener {
 
     final fullUrl = 'http://$ip:9202/file/$relativePath';
     Clipboard.setData(ClipboardData(text: fullUrl));
-    Get.snackbar("", 'copied'.tr + fullUrl, snackPosition: SnackPosition.BOTTOM);
+    Get.snackbar("", 'copied'.tr + fullUrl, snackPosition: SnackPosition.BOTTOM,titleText: const SizedBox.shrink(), );
   }
 }

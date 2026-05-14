@@ -167,3 +167,6 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 
 点击 托盘图标  弹出的一级菜单宽度改小点，文字居左对齐，不要修改代码逻辑，只修改样式 ❌️
 
+共享文件夹前面的图片使用:assets\images\ic_floder_share.png
+
+共享文件夹前面的图片大一点显示，去掉图片的阴影背景
