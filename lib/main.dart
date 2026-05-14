@@ -28,6 +28,7 @@ void main() async {
   );
   
   windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.setTitle('文件猫');
     await windowManager.show();
     await windowManager.focus();
   });
@@ -209,7 +210,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      title: 'Filecat',
+      title: '文件猫',
       builder: (context, child) => ResponsiveBreakpoints.builder(
         child: child!,
         breakpoints: [

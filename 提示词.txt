@@ -138,5 +138,7 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 
 默认文件夹的显示是： 未打开文件夹 使用图标 folder-resource.svg ，打开的文件夹使用图标 folder-resource-open.svg
 
-请将assets\images\ 下面的所有图片文件  移动到assets\images\ 下，注意使用到图片地方的代码要进行修改
+请将assets\helium_icons\ 下面的所有图片文件  移动到assets\images\ 下，注意使用到图片地方的代码要进行修改
 
+如图：红色标注部分的图片后面给我添加文本： 文件猫
+你给我加错位置了， 要在顶部企鹅图标后面  添加：文件猫， 而不是在小猫 gif图后面添加文本
