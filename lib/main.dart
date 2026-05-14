@@ -4,6 +4,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'src/routes/app_pages.dart';
 import 'src/constants/app_colors.dart';
+import 'src/constants/app_translations.dart';
 import 'rust_bridge.dart';
 
 void main() async {
@@ -20,7 +21,7 @@ void main() async {
   );
   
   windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.setTitle('文件猫');
+    await windowManager.setTitle('app_name'.tr);
     await windowManager.show();
     await windowManager.focus();
   });
@@ -35,7 +36,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: '文件猫',
+      title: 'app_name'.tr,
+      translations: AppTranslations(),
+      locale: Get.deviceLocale,
+      fallbackLocale: const Locale('en', 'US'),
       initialRoute: AppPages.initial,
       getPages: AppPages.routes,
       theme: ThemeData(

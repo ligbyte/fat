@@ -18,6 +18,7 @@ class HomeController extends GetxController with TrayListener, WindowListener {
   final isLoading = false.obs;
   final autostartEnabled = false.obs;
   final serverRunning = false.obs;
+  final currentLanguage = 'system'.obs;
 
   @override
   void onInit() {
@@ -27,6 +28,48 @@ class HomeController extends GetxController with TrayListener, WindowListener {
     _initTray();
     _loadFilecatPath();
     _loadAutostartPreference();
+    _loadLanguagePreference();
+  }
+
+  void _loadLanguagePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    final langCode = prefs.getString('language_code');
+    if (langCode != null) {
+      currentLanguage.value = langCode;
+      if (langCode == 'zh_CN') {
+        Get.updateLocale(const Locale('zh', 'CN'));
+      } else if (langCode == 'en_US') {
+        Get.updateLocale(const Locale('en', 'US'));
+      } else {
+        Get.updateLocale(Get.deviceLocale ?? const Locale('en', 'US'));
+      }
+    } else {
+      currentLanguage.value = 'system';
+      Get.updateLocale(Get.deviceLocale ?? const Locale('en', 'US'));
+    }
+    updateTrayMenu();
+  }
+
+  void switchLanguage(String langCode) async {
+    currentLanguage.value = langCode;
+    if (langCode == 'zh_CN') {
+      Get.updateLocale(const Locale('zh', 'CN'));
+    } else if (langCode == 'en_US') {
+      Get.updateLocale(const Locale('en', 'US'));
+    } else {
+      // Follow System
+      Get.updateLocale(Get.deviceLocale ?? const Locale('en', 'US'));
+    }
+    
+    final prefs = await SharedPreferences.getInstance();
+    if (langCode == 'system') {
+      await prefs.remove('language_code');
+    } else {
+      await prefs.setString('language_code', langCode);
+    }
+    
+    updateTrayMenu(); // Rebuild tray menu with new language
+    windowManager.setTitle('app_name'.tr); // Update window title
   }
 
   @override
@@ -65,22 +108,27 @@ class HomeController extends GetxController with TrayListener, WindowListener {
       items: [
         MenuItem(
           key: 'toggle_window',
-          label: isVisible ? '隐藏窗口' : '显示窗口',
+          label: isVisible ? 'hide_window'.tr : 'show_window'.tr,
+        ),
+        MenuItem.separator(),
+        MenuItem(
+          key: 'switch_lang',
+          label: 'switch_lang'.tr,
         ),
         MenuItem.separator(),
         MenuItem(
           key: 'support',
-          label: '支持作者',
+          label: 'support_author'.tr,
         ),
         MenuItem.separator(),
         MenuItem(
           key: 'about',
-          label: '关于',
+          label: 'about'.tr,
         ),
         MenuItem.separator(),
         MenuItem(
           key: 'exit',
-          label: '退出',
+          label: 'exit'.tr,
         ),
       ],
     );
@@ -132,6 +180,8 @@ class HomeController extends GetxController with TrayListener, WindowListener {
       showSupportDialog();
     } else if (menuItem.key == 'about') {
       showAboutDialog();
+    } else if (menuItem.key == 'switch_lang') {
+      showLanguageDialog();
     } else if (menuItem.key == 'exit') {
       exit(0);
     }
@@ -181,9 +231,9 @@ class HomeController extends GetxController with TrayListener, WindowListener {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
-                '文件猫',
-                style: TextStyle(
+              Text(
+                'app_name'.tr,
+                style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w900,
                   color: AppColors.textMain,
@@ -207,20 +257,20 @@ class HomeController extends GetxController with TrayListener, WindowListener {
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
-                '一个 Flutter + Rust 混合开发的\n文件管理应用',
+              Text(
+                'app_desc'.tr,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                   height: 1.6,
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                '支持系统托盘 · 文件浏览 · 局域网共享',
+              Text(
+                'app_features'.tr,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.textMuted,
                   fontWeight: FontWeight.w500,
@@ -270,15 +320,15 @@ class HomeController extends GetxController with TrayListener, WindowListener {
                   ],
                 ),
                 child: Image.asset(
-                  'assets/images/wechat_pay.jpg',
+                  'wechat_pay_img'.tr,
                   width: 240,
                   fit: BoxFit.cover,
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
-                '支持一下作者吧~~~',
-                style: TextStyle(
+              Text(
+                'support_title'.tr,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                   color: AppColors.textMain,
@@ -286,10 +336,10 @@ class HomeController extends GetxController with TrayListener, WindowListener {
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                '您的支持是我持续更新的最大动力',
+              Text(
+                'support_desc'.tr,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                   height: 1.5,
@@ -300,6 +350,98 @@ class HomeController extends GetxController with TrayListener, WindowListener {
         ),
       ),
     );
+  }
+
+  void showLanguageDialog() {
+    Get.dialog(
+      Dialog(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          width: 320,
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'switch_lang'.tr,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textMain,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Get.back(),
+                    child: Image.asset(
+                      'assets/images/close.png',
+                      width: 24,
+                      height: 24,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              _buildLanguageOption('zh_CN', 'lang_chinese'.tr),
+              const SizedBox(height: 8),
+              _buildLanguageOption('en_US', 'lang_english'.tr),
+              const SizedBox(height: 8),
+              _buildLanguageOption('system', 'lang_system'.tr),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption(String code, String label) {
+    return Obx(() {
+      final isSelected = currentLanguage.value == code;
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            switchLanguage(code);
+            Get.back();
+          },
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: isSelected ? AppColors.primary : AppColors.divider,
+                width: 1.5,
+              ),
+              borderRadius: BorderRadius.circular(8),
+              color: isSelected ? AppColors.primary.withOpacity(0.05) : Colors.transparent,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    color: isSelected ? AppColors.primary : AppColors.textMain,
+                  ),
+                ),
+                if (isSelected)
+                  const Icon(
+                    Icons.check_circle_rounded,
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
   }
 
   void _loadAutostartPreference() async {
@@ -380,7 +522,7 @@ class HomeController extends GetxController with TrayListener, WindowListener {
           _loadFolderContents(entry.key);
         }
       }
-      Get.snackbar('提示', '已刷新目录内容', snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('tip'.tr, 'refresh_success'.tr, snackPosition: SnackPosition.BOTTOM);
     }
   }
 
@@ -470,6 +612,6 @@ class HomeController extends GetxController with TrayListener, WindowListener {
 
     final fullUrl = 'http://$ip:9202/file/$relativePath';
     Clipboard.setData(ClipboardData(text: fullUrl));
-    Get.snackbar('已复制', fullUrl, snackPosition: SnackPosition.BOTTOM);
+    Get.snackbar('copied'.tr, fullUrl, snackPosition: SnackPosition.BOTTOM);
   }
 }

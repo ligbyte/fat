@@ -97,10 +97,10 @@ class HomePage extends GetView<HomeController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start, 
               children: [
-                const Text('共享文件夹路径', style: TextStyle(fontSize: 12, color: AppColors.textLight)), 
+                Text('share_path'.tr, style: const TextStyle(fontSize: 12, color: AppColors.textLight)), 
                 const SizedBox(height: 2), 
                 Obx(() => Text(
-                  controller.filecatPath.value.isEmpty ? '加载中...' : controller.filecatPath.value, 
+                  controller.filecatPath.value.isEmpty ? 'loading'.tr : controller.filecatPath.value, 
                   style: const TextStyle(fontSize: 14, color: AppColors.textDark, fontWeight: FontWeight.w600), 
                   maxLines: 1, 
                   overflow: TextOverflow.ellipsis
@@ -120,14 +120,14 @@ class HomePage extends GetView<HomeController> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: AppColors.textDark),
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: const Text(
-                  '更改路径',
-                  style: TextStyle(
+                child: Text(
+                  'change_path'.tr,
+                  style: const TextStyle(
                     fontSize: 14,
-                    color: AppColors.textSecondary,
+                    color: AppColors.textDark,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -150,9 +150,9 @@ class HomePage extends GetView<HomeController> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                const Text(
-                  '目录内容',
-                  style: TextStyle(
+                Text(
+                  'dir_contents'.tr,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textDark,
@@ -162,7 +162,7 @@ class HomePage extends GetView<HomeController> {
                 IconButton(
                   onPressed: controller.refreshContents,
                   icon: const Icon(Icons.refresh_rounded, size: 18),
-                  tooltip: '刷新目录',
+                  tooltip: 'refresh_dir'.tr,
                   color: AppColors.primary,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -193,7 +193,7 @@ class HomePage extends GetView<HomeController> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          '文件夹为空',
+                          'empty_dir'.tr,
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade400,
@@ -231,9 +231,9 @@ class HomePage extends GetView<HomeController> {
                 height: 28,
               ),
               const SizedBox(width: 8),
-              const Text(
-                '服务运行中',
-                style: TextStyle(
+              Text(
+                'service_running'.tr,
+                style: const TextStyle(
                   fontSize: 13,
                   color: AppColors.success,
                   fontWeight: FontWeight.w400,
@@ -243,9 +243,9 @@ class HomePage extends GetView<HomeController> {
           ),
           Row(
             children: [
-              const Text(
-                '开机自启动',
-                style: TextStyle(
+              Text(
+                'autostart'.tr,
+                style: const TextStyle(
                   fontSize: 13,
                   color: AppColors.textDark,
                 ),
