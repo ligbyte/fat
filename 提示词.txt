@@ -170,3 +170,5 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 共享文件夹前面的图片使用:assets\images\ic_floder_share.png
 
 共享文件夹前面的图片大一点显示，去掉图片的阴影背景
+
+重构当前代码，将 lib\rust_bridge.dart  移动到 lib\src\rust\rust_bridge.dart

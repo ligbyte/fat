@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'src/routes/app_pages.dart';
 import 'src/constants/app_colors.dart';
 import 'src/constants/app_translations.dart';
-import 'rust_bridge.dart';
+import 'src/rust/rust_bridge.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

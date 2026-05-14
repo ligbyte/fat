@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 import '../models/file_item.dart';
-import '../../rust_bridge.dart';
+import '../rust/rust_bridge.dart';
 import '../constants/app_colors.dart';
 
 class HomeController extends GetxController with TrayListener, WindowListener {
