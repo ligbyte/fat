@@ -252,7 +252,7 @@ class HomePage extends GetView<HomeController> {
                   child: Obx(() => Switch(
                     value: controller.autostartEnabled.value,
                     onChanged: controller.setAutostart,
-                    activeColor: AppColors.primary,
+                    activeColor: const Color(0xFF6ECC54),
                   )),
                 ),
               ),
