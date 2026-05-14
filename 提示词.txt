@@ -137,3 +137,6 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 如果是 .apk 文件，请使用图标 assets\helium_icons\android.svg
 
 默认文件夹的显示是： 未打开文件夹 使用图标 folder-resource.svg ，打开的文件夹使用图标 folder-resource-open.svg
+
+请将assets\images\ 下面的所有图片文件  移动到assets\images\ 下，注意使用到图片地方的代码要进行修改
+

@@ -53,7 +53,7 @@ void _showAboutDialog() {
               child: GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Image.asset(
-                  'assets/icon/close.png',
+                  'assets/images/close.png',
                   width: 28,
                   height: 28,
                 ),
@@ -74,7 +74,7 @@ void _showAboutDialog() {
                 ],
               ),
               child: Image.asset(
-                'assets/icon/app_icon.png',
+                'assets/images/app_icon.png',
                 width: 80,
                 height: 80,
               ),
@@ -150,7 +150,7 @@ void _showSupportDialog() {
               child: GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Image.asset(
-                  'assets/icon/close.png',
+                  'assets/images/close.png',
                   width: 28,
                   height: 28,
                 ),
@@ -910,87 +910,87 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
     // 根据文件/文件夹名称获取对应的 Helium 图标
     String getHeliumIcon() {
       if (isDir) {
-        final folderName = name.toLowerCase();
-        // 常见的文件夹映射
-        const folderMap = {
-          'src': 'folder-src',
-          'source': 'folder-src',
-          'sources': 'folder-src',
-          'dist': 'folder-dist',
-          'out': 'folder-dist',
-          'build': 'folder-dist',
-          'release': 'folder-dist',
-          'bin': 'folder-dist',
-          'css': 'folder-css',
-          'styles': 'folder-css',
-          'style': 'folder-css',
-          'sass': 'folder-sass',
-          'scss': 'folder-sass',
-          'images': 'folder-images',
-          'image': 'folder-images',
-          'img': 'folder-images',
-          'icons': 'folder-images',
-          'icon': 'folder-images',
-          'scripts': 'folder-scripts',
-          'script': 'folder-scripts',
-          'node_modules': 'folder-node',
-          'js': 'folder-javascript',
-          'javascript': 'folder-javascript',
-          'font': 'folder-font',
-          'fonts': 'folder-font',
-          'test': 'folder-test',
-          'tests': 'folder-test',
-          'spec': 'folder-test',
-          'specs': 'folder-test',
-          'doc': 'folder-docs',
-          'docs': 'folder-docs',
-          'documents': 'folder-docs',
-          '.git': 'folder-git',
-          '.github': 'folder-github',
-          '.vscode': 'folder-vscode',
-          'views': 'folder-views',
-          'pages': 'folder-views',
-          'components': 'folder-components',
-          'assets': 'folder-resource',
-          'res': 'folder-resource',
-          'resource': 'folder-resource',
-          'resources': 'folder-resource',
-          'lib': 'folder-lib',
-          'libs': 'folder-lib',
-          'vendor': 'folder-lib',
-          'themes': 'folder-theme',
-          'theme': 'folder-theme',
-          'public': 'folder-public',
-          'www': 'folder-public',
-          'include': 'folder-include',
-          'docker': 'folder-docker',
-          'db': 'folder-database',
-          'database': 'folder-database',
-          'sql': 'folder-database',
-          'log': 'folder-log',
-          'logs': 'folder-log',
-          'temp': 'folder-temp',
-          'tmp': 'folder-temp',
-          'cache': 'folder-temp',
-          'video': 'folder-video',
-          'videos': 'folder-video',
-          'audio': 'folder-audio',
-          'music': 'folder-audio',
-          'api': 'folder-api',
-          'app': 'folder-app',
-          'config': 'folder-config',
-          'settings': 'folder-config',
-          'tools': 'folder-tools',
-          'helper': 'folder-helper',
-          'helpers': 'folder-helper',
-        };
-        
-        String iconName = folderMap[folderName] ?? 'folder-resource';
-        if (isExpanded) {
-          return 'assets/helium_icons/$iconName-open.svg';
-        }
-        return 'assets/helium_icons/$iconName.svg';
-      } else {
+          final folderName = name.toLowerCase();
+          // 常见的文件夹映射
+          const folderMap = {
+            'src': 'folder-src',
+            'source': 'folder-src',
+            'sources': 'folder-src',
+            'dist': 'folder-dist',
+            'out': 'folder-dist',
+            'build': 'folder-dist',
+            'release': 'folder-dist',
+            'bin': 'folder-dist',
+            'css': 'folder-css',
+            'styles': 'folder-css',
+            'style': 'folder-css',
+            'sass': 'folder-sass',
+            'scss': 'folder-sass',
+            'images': 'folder-images',
+            'image': 'folder-images',
+            'img': 'folder-images',
+            'icons': 'folder-images',
+            'icon': 'folder-images',
+            'scripts': 'folder-scripts',
+            'script': 'folder-scripts',
+            'node_modules': 'folder-node',
+            'js': 'folder-javascript',
+            'javascript': 'folder-javascript',
+            'font': 'folder-font',
+            'fonts': 'folder-font',
+            'test': 'folder-test',
+            'tests': 'folder-test',
+            'spec': 'folder-test',
+            'specs': 'folder-test',
+            'doc': 'folder-docs',
+            'docs': 'folder-docs',
+            'documents': 'folder-docs',
+            '.git': 'folder-git',
+            '.github': 'folder-github',
+            '.vscode': 'folder-vscode',
+            'views': 'folder-views',
+            'pages': 'folder-views',
+            'components': 'folder-components',
+            'assets': 'folder-resource',
+            'res': 'folder-resource',
+            'resource': 'folder-resource',
+            'resources': 'folder-resource',
+            'lib': 'folder-lib',
+            'libs': 'folder-lib',
+            'vendor': 'folder-lib',
+            'themes': 'folder-theme',
+            'theme': 'folder-theme',
+            'public': 'folder-public',
+            'www': 'folder-public',
+            'include': 'folder-include',
+            'docker': 'folder-docker',
+            'db': 'folder-database',
+            'database': 'folder-database',
+            'sql': 'folder-database',
+            'log': 'folder-log',
+            'logs': 'folder-log',
+            'temp': 'folder-temp',
+            'tmp': 'folder-temp',
+            'cache': 'folder-temp',
+            'video': 'folder-video',
+            'videos': 'folder-video',
+            'audio': 'folder-audio',
+            'music': 'folder-audio',
+            'api': 'folder-api',
+            'app': 'folder-app',
+            'config': 'folder-config',
+            'settings': 'folder-config',
+            'tools': 'folder-tools',
+            'helper': 'folder-helper',
+            'helpers': 'folder-helper',
+          };
+          
+          String iconName = folderMap[folderName] ?? 'folder-resource';
+          if (isExpanded) {
+            return 'assets/images/$iconName-open.svg';
+          }
+          return 'assets/images/$iconName.svg';
+        } else {
         final ext = name.split('.').last.toLowerCase();
         final fileName = name.toLowerCase();
         
@@ -1013,7 +1013,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
         };
         
         if (fileNameMap.containsKey(fileName)) {
-          return 'assets/helium_icons/${fileNameMap[fileName]}.svg';
+          return 'assets/images/${fileNameMap[fileName]}.svg';
         }
 
         // 扩展名匹配
@@ -1092,7 +1092,7 @@ class _MyHomePageState extends State<MyHomePage> with TrayListener, WindowListen
         };
         
         String iconName = extMap[ext] ?? 'file';
-        return 'assets/helium_icons/$iconName.svg';
+        return 'assets/images/$iconName.svg';
       }
     }
 
