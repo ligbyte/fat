@@ -120,14 +120,14 @@ class HomePage extends GetView<HomeController> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.textDark),
+                  border: Border.all(color: Color(0xFF000000)),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
                   'change_path'.tr,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: AppColors.textDark,
+                    color: Color(0xFF000000),
                     fontWeight: FontWeight.w400,
                   ),
                 ),

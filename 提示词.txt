@@ -159,3 +159,6 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 
 
 更改路径 按钮，文字和边框颜色改成#000000
+
+这是托盘图标和菜单库的文档：https://pub.dev/packages/tray_manager， 这是源码：https://github.com/leanflutter/tray_manager，请仔细阅读文档，
+当前fat项目切换语言使用的是弹窗形式，请帮我把切换语言改到 托盘菜单的二级菜单中实现
