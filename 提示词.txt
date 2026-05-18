@@ -144,7 +144,7 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 如图：红色标注部分的图片后面给我添加文本： 文件猫
 你给我加错位置了， 要在顶部企鹅图标后面  添加：文件猫， 而不是在小猫 gif图后面添加文本
 
-这是我以前写的一个Flutter项目：F:\flutter\flutter_study_getx，请仔细阅读该项目并分析其项目结构和包管理，学习完成后 对当前fat项目进行重构，
+这是我以前写的一个Flutter项目：F:\flutter\flutter_study_getx，请仔细阅读该项目并分析其项目结构和包管理，学习完成后 对当前filecat项目进行重构，
 不要改变项目的业务逻辑和UI
 
 你重构的非常好， 请帮我使用getx框架的国家化功能对当前项目进行国际化处理，方便各个国家的人使用，
@@ -162,7 +162,7 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 更改路径 按钮，文字和边框颜色改成#000000
 
 这是托盘图标和菜单库的文档：https://pub.dev/packages/tray_manager， 这是源码：https://github.com/leanflutter/tray_manager，请仔细阅读文档，
-当前fat项目切换语言使用的是弹窗形式，请帮我把切换语言改到 托盘菜单的二级菜单中实现
+当前filecat项目切换语言使用的是弹窗形式，请帮我把切换语言改到 托盘菜单的二级菜单中实现
 
 
 点击 托盘图标  弹出的一级菜单宽度改小点，文字居左对齐，不要修改代码逻辑，只修改样式 ❌️

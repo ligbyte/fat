@@ -30,11 +30,11 @@ class RustBridge {
     String libraryPath = '';
 
     if (Platform.isWindows) {
-      libraryPath = 'fat.dll';
+      libraryPath = 'filecat.dll';
     } else if (Platform.isLinux) {
-      libraryPath = 'libfat.so';
+      libraryPath = 'libfilecat.so';
     } else if (Platform.isMacOS) {
-      libraryPath = 'libfat.dylib';
+      libraryPath = 'libfilecat.dylib';
     }
 
     _dylib = DynamicLibrary.open(libraryPath);

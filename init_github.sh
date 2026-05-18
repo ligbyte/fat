@@ -25,7 +25,7 @@ echo "重命名分支为 main..."
 git branch -M main
 
 echo "添加远程仓库 origin..."
-git remote add origin git@github.com:ligbyte/fat.git || \
+git remote add origin git@github.com:ligbyte/filecat.git || \
     echo "警告: 可能已存在远程 origin，跳过添加。"
 
 echo "推送代码到远程仓库 main 分支..."

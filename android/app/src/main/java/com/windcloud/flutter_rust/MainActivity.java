@@ -1,4 +1,4 @@
-package com.windcloud.fat;
+package com.windcloud.filecat;
 
 import io.flutter.embedding.android.FlutterActivity;
 

@@ -50,5 +50,5 @@ platform-specific setup required to verify the change.
 ## Security & Configuration Tips
 
 Do not commit local signing keys, generated build output, or machine-specific IDE
-files. Treat `fat.dll` and rebuilt native artifacts as platform outputs; update
+files. Treat `filecat.dll` and rebuilt native artifacts as platform outputs; update
 them only when the Rust bridge behavior intentionally changes.

@@ -1,6 +1,6 @@
 {
-    "name": "fat",
-    "short_name": "fat",
+    "name": "filecat",
+    "short_name": "filecat",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

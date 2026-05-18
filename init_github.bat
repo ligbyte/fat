@@ -31,7 +31,7 @@ git branch -M main
 if %errorlevel% neq 0 goto error
 
 echo 添加远程仓库 origin...
-git remote add origin git@github.com:ligbyte/fat.git
+git remote add origin git@github.com:ligbyte/filecat.git
 if %errorlevel% neq 0 (
     echo 警告: 添加远程仓库失败，可能已存在远程 origin。
 )

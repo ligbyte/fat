@@ -1,6 +1,6 @@
-# Fat
+# filecat
 
-File + Cat = Fat
+File + Cat = filecat
 
 ## Getting Started
 
