@@ -172,3 +172,33 @@ FileCat 文本前方的图片使用 assets\icon\app_icon.png
 共享文件夹前面的图片大一点显示，去掉图片的阴影背景
 
 重构当前代码，将 lib\rust_bridge.dart  移动到 lib\src\rust\rust_bridge.dart
+
+
+目前项目的rust部分在Windows系统中使用cargo build --release  是可以正常编译的，但是在Ubuntu 20.04系统中使用 cargo build --release 编译报错：
+--> src/lib.rs:8:17
+  |
+8 | use actix_web::{web, App, HttpServer, Responder, dev::ServerHandle};
+  |                 ^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0061]: this function takes 1 argument but 2 arguments were supplied
+   --> src/lib.rs:592:15
+    |
+592 |         match autostart::is_enabled(app_name_str, &exe_path) {
+    |               ^^^^^^^^^^^^^^^^^^^^^               --------- unexpected argument #2 of type `&PathBuf`
+    |
+note: function defined here
+   --> src/lib.rs:532:12
+    |
+532 |     pub fn is_enabled(app_name: &str) -> Result<bool, Box<dyn Error>> {
+    |            ^^^^^^^^^^
+help: remove the extra argument
+    |
+592 -         match autostart::is_enabled(app_name_str, &exe_path) {
+592 +         match autostart::is_enabled(app_name_str) {
+    |
+
+For more information about this error, try `rustc --explain E0061`.
+warning: `filecat` (lib) generated 1 warning
+error: could not compile `filecat` (lib) due to 1 previous error; 1 warning emitted
