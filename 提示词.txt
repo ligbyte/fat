@@ -202,3 +202,21 @@ help: remove the extra argument
 For more information about this error, try `rustc --explain E0061`.
 warning: `filecat` (lib) generated 1 warning
 error: could not compile `filecat` (lib) due to 1 previous error; 1 warning emitted
+
+
+
+目前项目在Windows系统中使用flutter run -d linux  是可以正常编译的，但是在Ubuntu 20.04系统中使用 flutter run -d linux 编译报错：
+(base) lime@lime:~/github/filecat$ flutter run -d linux
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure
+you trust this source!
+Launching lib/main.dart on Linux in debug mode...
+CMake Error at flutter/ephemeral/.plugin_symlinks/tray_manager/linux/CMakeLists.txt:32 (message):
+
+
+  The `tray_manager` package requires ayatana-appindicator3-0.1 or
+  appindicator3-0.1.  See
+  https://github.com/leanflutter/tray_manager#linux-requirements
+
+
+Building Linux application...                                           
+Error: Unable to generate build files
